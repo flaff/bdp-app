@@ -1,39 +1,25 @@
+@import "~antd/dist/antd.css";
 @import "~font-awesome/css/font-awesome.css";
+@import "~bootstrap/dist/css/bootstrap-reboot.css";
+@import "~bootstrap/dist/css/bootstrap-grid.css";
+@import "~inter-ui/inter-ui.css";
 
 body {
   position: relative;
-  color: white;
+  color: #555;
+  font-size: 14px;
   height: 100vh;
-  background-color: #232C39;
-  background-image: linear-gradient(45deg, rgba(0, 216, 255, .5) 10%, rgba(0, 1, 127, .7));
-  font-family: Arial, Helvetica, Helvetica Neue, serif;
+  font-family: 'Inter UI', Arial, Helvetica, Helvetica Neue, serif;
   overflow-y: hidden;
 }
 
-h2 {
-  margin: 0;
-  font-size: 2.25rem;
-  font-weight: bold;
-  letter-spacing: -.025em;
-  color: #fff;
-}
+:root {
+  --pink: #F50057;
+  --green-bright: #00E676;
+  --green: #00C853;
+  --blue: #536DFE;
+  --yellow: #FBC02D;
+  --orange: #FF3D00;
 
-p {
-  font-size: 24px;
-}
-
-li {
-  list-style: none;
-}
-
-a {
-  color: white;
-  opacity: .75;
-  text-decoration: none;
-}
-
-a:hover {
-  opacity: 1;
-  text-decoration: none;
-  cursor: pointer;
+  --accent: var(--orange);
 }

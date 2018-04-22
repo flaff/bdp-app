@@ -1,0 +1,67 @@
+:local {
+  .sectionTopBar {
+    border-bottom: 1px solid #ddd;
+    padding: 10px;
+  }
+
+  .container {
+    /*position: absolute;*/
+    height: calc(100vh - 40px);
+    width: 100vw;
+  }
+
+  .bottomBar {
+    height: 40px;
+    font-size: 12px;
+  }
+
+  .bottomBarRow {
+    height: 100%;
+  }
+
+  .container h2 {
+    font-size: 5rem;
+  }
+
+  .container a {
+    font-size: 1.4rem;
+  }
+
+  .leftSidebar {
+    background: #f9f9f9;
+    height: 100%;
+  }
+
+  .optionRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 15px 0;
+  }
+
+  .codeDisplay {
+    border-radius: 4px;
+    font-family: 'Inconsolata', sans-serif;
+    background: #f9f9f9 !important;
+  }
+
+  .codeDisplay::-webkit-scrollbar {
+    height: 4px;
+    width: 4px;
+  }
+
+  .codeDisplay::-webkit-scrollbar-thumb {
+    background: #666;
+    border-radius: 3px;
+  }
+
+  .codeDisplay::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 3px;
+  }
+
+  .windowButtonsSpacer {
+    height: 30px;
+  }
+
+}

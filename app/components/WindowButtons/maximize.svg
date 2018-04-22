@@ -1,0 +1,39 @@
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
+<svg width="12" height="12" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <style>
+        g {
+        stroke: ButtonText;
+        stroke-width: 0.9px;
+        fill: none;
+        shape-rendering: crispEdges;
+        }
+
+        .highcontrast {
+        stroke-width: 1.9px;
+        }
+        .highcontrast-hover &gt; g {
+        stroke: HighlightText;
+        }
+        .white &gt; g {
+        stroke: #fff;
+        }
+        .themes {
+        stroke: #fff;
+        stroke-width: 1.9px;
+        }
+
+        .outer-stroke {
+        stroke: #000;
+        stroke-width: 3.6;
+        opacity: .75;
+        }
+        .restore-background-window {
+        stroke-width: .9;
+        }
+    </style>
+    <g>
+        <rect x="1.5" y="1.5" width="9" height="9"/>
+    </g>
+</svg>

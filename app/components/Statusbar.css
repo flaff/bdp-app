@@ -1,0 +1,26 @@
+.statusBar {
+  text-align: right;
+  font-size: 12px;
+  height: 100%;
+  line-height: 40px;
+}
+
+.content {
+  vertical-align: middle;
+}
+
+.text {
+  margin-right: 10px;
+}
+
+.success {
+  color: var(--green);
+}
+
+.warning {
+  color: var(--orange);
+}
+
+.error {
+  color: var(--red);
+}

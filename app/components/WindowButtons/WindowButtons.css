@@ -1,0 +1,41 @@
+.windowButtons {
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 99999;
+}
+
+.draggableArea {
+  width: calc(100vw - 135px);
+  height: 29px;
+  background: transparent;
+  -webkit-app-region: drag;
+  float: left;
+}
+
+.windowButtons > i {
+  width: 45px;
+  height: 29px;
+  transition: color 200ms, background 200ms;
+  background: white;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.windowButtons > i:hover {
+  background: #e5e5e5;
+}
+
+.windowButtons > .close:hover {
+  background: #e81123;
+}
+
+.windowButtons > .close > img {
+  transition: filter 200ms;
+  filter: invert(0%);
+}
+
+.windowButtons > .close:hover > img {
+  filter: invert(100%);
+}

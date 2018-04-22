@@ -1,0 +1,27 @@
+.toggle {
+  display: inline-block;
+  width: 30px;
+  height: 17px;
+  background: rgba(128, 128, 128, 0.3);
+  border-radius: 10px;
+  transition: background 200ms;
+  text-align: center;
+}
+
+.toggle.on {
+  background: var(--accent);
+}
+
+.indicator {
+  width: 13px;
+  height: 13px;
+  background: white;
+  border-radius: 7px;
+  transition: transform 200ms;
+  display: inline-block;
+  transform: translate(-50%);
+}
+
+.toggle.on .indicator {
+  transform: translate(50%);
+}

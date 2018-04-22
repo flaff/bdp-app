@@ -44,6 +44,7 @@ app.on('ready', () =>
     width: 1024,
     height: 728
   });
+      mainWindow.setMenu(null);
 
   mainWindow.loadURL(`file://${__dirname}/app.html`);
 
