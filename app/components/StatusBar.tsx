@@ -1,9 +1,9 @@
 import * as React from 'react';
 import {Icon} from 'antd';
 
-const styles = require('./Statusbar.css');
+const styles = require('./StatusBar.css');
 
-export default class Statusbar extends React.Component {
+export default class StatusBar extends React.Component {
   render() {
     return (
       <div className={styles.statusBar}>

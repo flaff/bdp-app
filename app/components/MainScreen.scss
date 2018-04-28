@@ -1,12 +1,19 @@
+$topBarHeight: 60px;
+$statusBarHeight: 40px;
+
 :local {
+  .mainScreen {
+  }
+
   .sectionTopBar {
     border-bottom: 1px solid #ddd;
     padding: 10px;
+    display: flex;align-items: center;
   }
 
   .container {
     /*position: absolute;*/
-    height: calc(100vh - 40px);
+    height: calc(100vh - #{$statusBarHeight + $topBarHeight});
     width: 100vw;
   }
 
@@ -27,9 +34,10 @@
     font-size: 1.4rem;
   }
 
-  .leftSidebar {
+  .sideBar {
     background: #f9f9f9;
-    height: 100%;
+    width: 100%;
+    height: $topBarHeight;
   }
 
   .optionRow {

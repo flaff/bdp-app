@@ -10,7 +10,7 @@ view = hotmillProvider.query(
     source = 'HOTMILL_1'
 )`;
 
-export const pythonModelCode =
+export const pythonModelWithTypoCode =
 `import pandas as pd
 from viewProvider import view
 
@@ -21,6 +21,19 @@ df = df.loc[df['temperature' != null]
 
 # expose model
 model = df`;
+
+export const pythonModelCode =
+    `import pandas as pd
+from viewProvider import view
+
+df = pd.DataFrame(view)
+
+# filter out null temperature records
+df = df.loc[df['temperature'] != null]
+
+# expose model
+model = df`;
+
 
 export const samplePythonCode =
 `import pandas as pd
