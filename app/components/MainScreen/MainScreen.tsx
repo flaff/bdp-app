@@ -1,20 +1,23 @@
 import * as React from 'react';
 // import {Link} from 'react-router-dom';
 
-import Toggle from './Toggle';
-import Image from './Image';
-import ImageCrop from './ImageCrop';
+import Toggle from '../Toggle/index';
+import Image from '../Image/index';
+import ImageCrop from '../ImageCrop/index';
 import {Icon, Button, Menu, Dropdown} from 'antd';
-import {pythonModelCode, pythonModelWithTypoCode, pythonViewCode, samplePythonBase64Graph} from "./MainScreen.mock";
-import StatusBar from './StatusBar';
-import SideBar from './SideBar';
+import {pythonModelCode, pythonViewCode, samplePythonBase64Graph} from "./MainScreen.mock";
+import StatusBar from '../StatusBar/index';
+import SideBar from '../SideBar/index';
 import MonacoEditor, {MonacoDiffEditor} from 'react-monaco-editor';
-import MonacoResizer from "../utils/MonacoResizer";
-import Markdown from './Markdown/index';
+import MonacoResizer from "../../utils/MonacoResizer";
+import Markdown from '../Markdown/index';
+import UserHighlight from '@components/UserHighlight';
+import Link from '@components/Link';
+import Notification from '@components/Notification';
 
 const defaultEditorOptions = {
     autoIndent: true,
-        fontFamily: 'Inconsolata'
+    fontFamily: 'Inconsolata'
 };
 
 // import {remote} from 'electron';
@@ -69,15 +72,23 @@ export default class MainScreen extends React.Component<{}, HomeState> {
 
                         <div className={'col-4'}>
                             <div className={styles.sectionTopBar}>
-                                <Icon type="eye-o"/>
                                 <div>
-                                    <div>View</div>
-                                    <div style={{fontSize: '75%'}}>
-                                        <span>hotmill-1-view.py</span><span style={{color: '#aaa'}}>@41da38a</span> by
-                                        <span style={{color: 'var(--blue)', cursor: 'pointer'}}>flaff</span>
+                                    <div>
+                                        <div>View</div>
+                                        <div style={{fontSize: '75%'}}>
+                                            <span>views/hotmill-1/view.py</span><span
+                                            style={{color: '#aaa'}}>@41da38a</span> by
+                                            {' '}
+                                            <UserHighlight name={'flaff'} placement={'bottom'}>
+                                                <Link>flaff</Link>
+                                            </UserHighlight>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                            <Notification buttonIcon={'fork'} buttonText={'Fork'} type={'warning'}>
+                                <span><b>Warning!</b> This view is read-only.</span>
+                            </Notification>
                             <MonacoEditor
                                 value={pythonViewCode}
                                 theme={'xcode'}
@@ -89,13 +100,24 @@ export default class MainScreen extends React.Component<{}, HomeState> {
 
                         <div className={'col-4'}>
                             <div className={styles.sectionTopBar}>
-                                <Icon type="database"/>{' '}
-                                Model
+                                <div>
+                                    <div>
+                                        <div>Model</div>
+                                        <div style={{fontSize: '75%'}}>
+                                            <span>models/hotmill-1/model.py</span><span
+                                            style={{color: '#aaa'}}>@cc832eb</span> by
+                                            {' '}
+                                            <UserHighlight name={'homer'} placement={'bottom'}>
+                                                <Link>homer</Link>
+                                            </UserHighlight>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
-                            <MonacoDiffEditor
+                            <MonacoEditor
                                 language={'python'}
-                                original={pythonModelWithTypoCode}
+                                // original={pythonModelWithTypoCode}
                                 theme={'xcode'}
                                 options={defaultEditorOptions}
                                 value={pythonModelCode}
@@ -113,9 +135,9 @@ export default class MainScreen extends React.Component<{}, HomeState> {
                                 height={'50%'}
                                 options={defaultEditorOptions}
                             />
-                            <Markdown source={this.state.markdownText} />
+                            <Markdown source={this.state.markdownText}/>
                             {/*<ImageCrop width={5} height={5}>*/}
-                                {/*<Image base64={samplePythonBase64Graph}/>*/}
+                            {/*<Image base64={samplePythonBase64Graph}/>*/}
                             {/*</ImageCrop>*/}
                         </div>
                     </div>

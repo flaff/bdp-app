@@ -1,5 +1,5 @@
 import * as React from 'react';
-const styles = require('./ImageCrop.css');
+const styles = require('./styles.css');
 
 interface ImageCropProps {
   children: JSX.Element;

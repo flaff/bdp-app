@@ -1,5 +1,5 @@
 import * as React from 'react';
-const css = require('./Toggle.css');
+const css = require('./styles.css');
 
 interface ToggleProps {
   onClick?: (event: React.MouseEvent<HTMLDivElement>) => void;

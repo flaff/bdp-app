@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Highlight from 'react-highlight.js';
+import {Highlight} from 'react-fast-highlight';
 
 interface codeNode {
     language?: string;
@@ -8,12 +8,11 @@ interface codeNode {
 }
 
 const codeRenderer = (codeNode: codeNode) => {
-    return <code className={'hljs'}>{codeNode.value}</code>;
-    // return codeNode.value ? (
-    //     <Highlight language={codeNode.language}>
-    //         <span>{codeNode.value}</span>
-    //     </Highlight>
-    // ) : (<code>{'empty'}</code>)
+    return codeNode.value ? (
+        <Highlight languages={[codeNode.language]}>
+            {codeNode.value}
+        </Highlight>
+    ) : (<code>{'empty'}</code>)
 };
 
 export default codeRenderer;

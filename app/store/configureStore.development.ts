@@ -3,9 +3,9 @@ import thunk from 'redux-thunk';
 import { createHashHistory } from 'history';
 import { routerMiddleware, push } from 'react-router-redux';
 import { createLogger } from 'redux-logger';
-import rootReducer from '../reducers';
+import rootReducer from '../state';
 
-import * as counterActions from '../actions/counter';
+import * as counterActions from '../state/counter.actions';
 
 declare const window: Window & {
   __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?(a: any): void;
@@ -49,8 +49,8 @@ export = {
     const store = createStore(rootReducer, initialState, enhancer);
 
     if (module.hot) {
-      module.hot.accept('../reducers', () =>
-        store.replaceReducer(require('../reducers')) // eslint-disable-line global-require
+      module.hot.accept('../state', () =>
+        store.replaceReducer(require('../state')) // eslint-disable-line global-require
       );
     }
 

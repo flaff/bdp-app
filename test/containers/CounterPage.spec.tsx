@@ -5,12 +5,12 @@ import { mount } from 'enzyme';
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'react-router-redux';
 import CounterPage from '../../app/containers/CounterPage';
-import { IState } from '../../app/reducers';
+import { IState } from '../../app/state';
 
 const CounterPageAny = CounterPage as any;
 let { configureStore, history } = require('../../app/store/configureStore');
 
-function setup(initialState?: IState) {
+function setup(initialState?: Partial<IState>) {
   const store = configureStore(initialState);
   const app = mount(
     <Provider store={store}>

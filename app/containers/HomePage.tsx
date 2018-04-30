@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
-import MainScreen from '../components/MainScreen';
+import MainScreen from '../components/MainScreen/MainScreen';
+import LoginScreen from './WelcomeScreen';
 
 export class HomePage extends React.Component<RouteComponentProps<any>, void> {
   render() {

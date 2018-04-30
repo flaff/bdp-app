@@ -1,0 +1,18 @@
+:local {
+  .notification {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+
+    font-size: 11px;
+    padding: 10px;
+  }
+
+  .buttonText {
+    font-size: 11px;
+    vertical-align: middle;
+  }
+
+  .button {}
+}

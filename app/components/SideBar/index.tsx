@@ -2,16 +2,17 @@ import * as React from 'react';
 import {Icon} from 'antd';
 import * as classNames from 'classnames';
 
-const styles = require('./SideBar.scss');
+const styles = require('./styles.scss');
 
 interface SideBarProps {
     className?: string;
+    height?: string;
 }
 
 export default class SideBar extends React.Component<SideBarProps> {
     render() {
         return (
-            <div className={classNames(styles.sideBar, this.props.className)}>
+            <div className={classNames(styles.sideBar, this.props.className)} style={{height: this.props.height}}>
                 <div className={styles.entry}>
                     <Icon type="search" className={styles.icon} />
                     <div>Browse</div>

@@ -8,7 +8,8 @@ $statusBarHeight: 40px;
   .sectionTopBar {
     border-bottom: 1px solid #ddd;
     padding: 10px;
-    display: flex;align-items: center;
+    display: flex;
+    align-items: center;
   }
 
   .container {
@@ -24,14 +25,6 @@ $statusBarHeight: 40px;
 
   .bottomBarRow {
     height: 100%;
-  }
-
-  .container h2 {
-    font-size: 5rem;
-  }
-
-  .container a {
-    font-size: 1.4rem;
   }
 
   .sideBar {

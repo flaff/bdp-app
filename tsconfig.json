@@ -10,6 +10,7 @@
       "dom.iterable",
       "scripthost"
     ],
+
     "types": [],
 
     "alwaysStrict": true,
@@ -25,8 +26,16 @@
 
     "sourceMap": true,
 
-    "outDir": "dist"
+    "outDir": "dist",
+
+    "baseUrl": ".",
+
+    "paths": {
+      "@components/*": ["./app/components/*"],
+      "@state/*": ["./app/state/*"]
+    }
   },
+
   "files": [
     "app/index.tsx"
   ],

@@ -1,0 +1,33 @@
+import {IAction, IActionWithPayload} from './helpers';
+import {setUserAvatar, setUserName} from './user.actions';
+
+export type TUserState = {
+    name?: string;
+    avatar?: string;
+}
+
+const
+    defaultState: TUserState = {
+        name: 'flaff',
+        avatar: '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'
+    },
+
+    SET_USER_NAME_REDUCER = (state: TUserState, action: IActionWithPayload<string>) => ({
+        ...state,
+        name: action.payload
+    }),
+
+    SET_USER_AVATAR_REDUCER = (state: TUserState, action: IActionWithPayload<string>) => ({
+        ...state,
+        avatar: action.payload
+    });
+
+export default function user(state: TUserState, action: IAction) {
+    if (setUserAvatar.test(action)) {
+        return SET_USER_AVATAR_REDUCER(state, action);
+    }
+    if (setUserName.test(action)) {
+        return SET_USER_NAME_REDUCER(state, action);
+    }
+    return state || defaultState;
+}

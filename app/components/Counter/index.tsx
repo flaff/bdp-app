@@ -2,7 +2,7 @@ import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 
-let styles = require('./Counter.scss');
+let styles = require('./styles.scss');
 
 export interface IProps extends RouteComponentProps<any> {
   increment(): void,

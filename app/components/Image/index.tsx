@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as classNames from 'classnames';
-const styles = require('./Image.scss');
+const styles = require('./styles.scss');
 
 interface ImageProps {
   base64?: string;

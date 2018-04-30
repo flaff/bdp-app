@@ -1,4 +1,6 @@
 import * as React from 'react';
+import {shell} from 'electron';
+import Link from '@components/Link';
 
 interface linkNode {
     href: string;
@@ -7,9 +9,9 @@ interface linkNode {
 
 const linkRenderer = (linkNode: linkNode) => {
     return (
-        <a href={linkNode.href} target={'_blank'}>
+        <Link onClick={() => shell.openExternal(linkNode.href)}>
             {linkNode.children}
-        </a>
+        </Link>
     )
 };
 

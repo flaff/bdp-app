@@ -1,0 +1,10 @@
+:global {
+  .ant-btn-background-ghost {
+    border-color: white !important;
+    color: white !important;
+
+    &:after {
+      border-color: white !important;
+    }
+  }
+}

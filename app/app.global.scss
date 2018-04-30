@@ -4,12 +4,7 @@
 @import "~bootstrap/dist/css/bootstrap-grid.css";
 @import "~inter-ui/inter-ui.css";
 @import "~highlight.js/styles/xcode.css";
-
-.hljs {
-  background: #efefef;
-  border-radius: 3px;
-  font-family: 'Inconsolata', sans-serif;
-}
+@import './antd.patch.scss';
 
 body {
   position: relative;
@@ -28,5 +23,5 @@ body {
   --yellow: #FBC02D;
   --orange: #FF3D00;
 
-  --accent: var(--orange);
+  --accent: var(--blue);
 }
