@@ -3,7 +3,7 @@ import {defineXCodeTheme} from "./MonacoTheme";
 
 const RESIZE_TIMEOUT = 250;
 
-export default class ResizableMonacoEditor {
+class MonacoResizer {
     editors: Array<ICodeEditor> = [];
     resizeTimeout: number;
     definedTheme: boolean;
@@ -34,3 +34,5 @@ export default class ResizableMonacoEditor {
         this.resizeTimeout = window.setTimeout(this.resizeEditor.bind(this), RESIZE_TIMEOUT);
     }
 }
+
+export default new MonacoResizer();

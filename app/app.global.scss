@@ -15,6 +15,26 @@ body {
   overflow-y: hidden;
 }
 
+.smallText {
+  font-size: 11px;
+}
+
+.fullHeight {
+  height: 100%;
+}
+
+.spaceAbove {
+  padding-top: 15px;
+}
+
+.ta-c {
+  text-align: center;
+}
+
+.pd {
+  padding: 15px;
+}
+
 :root {
   --pink: #F50057;
   --green-bright: #00E676;

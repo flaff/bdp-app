@@ -8,12 +8,12 @@ import {Icon, Button, Menu, Dropdown} from 'antd';
 import {pythonModelCode, pythonViewCode, samplePythonBase64Graph} from "./MainScreen.mock";
 import StatusBar from '../StatusBar/index';
 import SideBar from '../SideBar/index';
-import MonacoEditor, {MonacoDiffEditor} from 'react-monaco-editor';
-import MonacoResizer from "../../utils/MonacoResizer";
 import Markdown from '../Markdown/index';
 import UserHighlight from '@components/UserHighlight';
 import Link from '@components/Link';
 import Notification from '@components/Notification';
+
+import CodeEditor from '@components/CodeEditor';
 
 const defaultEditorOptions = {
     autoIndent: true,
@@ -29,7 +29,6 @@ interface HomeState {
     showImports: boolean;
     verboseMode: boolean;
     count: number;
-    monacoResizer: MonacoResizer,
     markdownText: string
 }
 
@@ -41,7 +40,6 @@ export default class MainScreen extends React.Component<{}, HomeState> {
             count: 0,
             showImports: true,
             verboseMode: true,
-            monacoResizer: new MonacoResizer(),
             markdownText: ''
         };
     }
@@ -89,12 +87,9 @@ export default class MainScreen extends React.Component<{}, HomeState> {
                             <Notification buttonIcon={'fork'} buttonText={'Fork'} type={'warning'}>
                                 <span><b>Warning!</b> This view is read-only.</span>
                             </Notification>
-                            <MonacoEditor
+                            <CodeEditor
                                 value={pythonViewCode}
-                                theme={'xcode'}
                                 language={'python'}
-                                editorDidMount={this.state.monacoResizer.addEditor}
-                                options={defaultEditorOptions}
                             />
                         </div>
 
@@ -115,25 +110,18 @@ export default class MainScreen extends React.Component<{}, HomeState> {
                                 </div>
                             </div>
 
-                            <MonacoEditor
+                            <CodeEditor
                                 language={'python'}
-                                // original={pythonModelWithTypoCode}
-                                theme={'xcode'}
-                                options={defaultEditorOptions}
                                 value={pythonModelCode}
-                                editorDidMount={this.state.monacoResizer.addEditor}
                             />
                         </div>
 
                         <div className={'col-3'}>
                             <div>Visualization</div>
-                            <MonacoEditor
+                            <CodeEditor
                                 language={'markdown'}
-                                theme={'xcode'}
                                 onChange={this.onMdEditorChange.bind(this)}
-                                editorDidMount={this.state.monacoResizer.addEditor}
                                 height={'50%'}
-                                options={defaultEditorOptions}
                             />
                             <Markdown source={this.state.markdownText}/>
                             {/*<ImageCrop width={5} height={5}>*/}
