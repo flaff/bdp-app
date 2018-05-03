@@ -201,8 +201,8 @@ app.on('ready', () =>
       }]
     }];
 
-    menu = Menu.buildFromTemplate(template);
-    Menu.setApplicationMenu(menu);
+    // menu = Menu.buildFromTemplate(template);
+    // Menu.setApplicationMenu(menu);
   } else {
     template = [{
       label: '&File',
@@ -267,7 +267,7 @@ app.on('ready', () =>
         }
       }]
     }];
-    menu = Menu.buildFromTemplate(template);
-    mainWindow.setMenu(menu);
+    // menu = Menu.buildFromTemplate(template);
+    // mainWindow.setMenu(menu);
   }
 }));
