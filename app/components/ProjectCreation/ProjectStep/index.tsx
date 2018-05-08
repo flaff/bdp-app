@@ -1,17 +1,24 @@
 import * as React from 'react';
 import * as classNames from 'classnames';
-import {Input} from 'antd';
+import {Button, Input} from 'antd';
 import {Row, Column} from '@components/Bootstrap';
 import Markdown from '@components/Markdown';
 import CodeEditor from '@components/CodeEditor';
 import Link from '@components/Link';
 import {ChangeEvent} from 'react';
 
-interface ProjectDetailsProps {
-    className?: string;
+export interface ProjectStepResult {
+    title: string;
+    shortDescription: string;
+    detailedDescription?: string;
 }
 
-interface ProjectDetailsState {
+interface ProjectStepProps {
+    className?: string;
+    onNextStep: (p: ProjectStepResult) => void;
+}
+
+interface ProjectStepState {
     projectTitle: string;
     projectShortDescription: string;
     projectDetailedDescription: string;
@@ -24,7 +31,7 @@ ${shortDescription || 'No short description provided'}
 #### Detailed description
 `);
 
-export default class ProjectDetails extends React.Component<ProjectDetailsProps, ProjectDetailsState> {
+export default class ProjectStep extends React.Component<ProjectStepProps, ProjectStepState> {
     constructor(props) {
         super(props);
         this.state = {
@@ -66,20 +73,28 @@ export default class ProjectDetails extends React.Component<ProjectDetailsProps,
         })
     }
 
+    createResult(): ProjectStepResult {
+        return {
+            detailedDescription: this.state.projectDetailedDescription,
+            shortDescription: this.state.projectShortDescription,
+            title: this.state.projectTitle
+        }
+    }
+
     render() {
         return (
             <Row className={classNames(this.props.className)}>
                 <Column size={1} />
                 <Column className={'d-flex flex-column'}>
-                    <div className={'spaceAbove'}>Select title that describes your project the best</div>
+                    <div className={'spaceAbove'}>Project title</div>
                     <Input placeholder={'my-project-name'} size={'large'} value={this.state.projectTitle} onChange={this.onProjectTitleChange} />
                     <div className={'smallText'}>Note: only lowercase letters, numbers and hyphens can be used.</div>
 
-                    <div className={'spaceAbove'}>Provide a short description (optional)</div>
+                    <div className={'spaceAbove'}>Short description (optional)</div>
                     <Input placeholder={'Short project description'} value={this.state.projectShortDescription} onChange={this.onProjectShortDescriptionChange} />
 
                     <div className={'spaceAbove'}>
-                        Provide an detailed <Link href={'https://www.markdownguide.org/getting-started'}>Markdown</Link> description (optional).
+                        Detailed <Link href={'https://www.markdownguide.org/getting-started'}>Markdown</Link> description (optional).
                         {' '}
                         <Link onClick={this.generateExtendedDescription}>Generate from above</Link>
                     </div>
@@ -93,6 +108,10 @@ export default class ProjectDetails extends React.Component<ProjectDetailsProps,
 
                         <Column><Markdown source={this.state.projectDetailedDescription} /></Column>
                     </Row>
+
+                    <div className={'ta-c pd'}>
+                        <Button size={'large'} onClick={() => this.props.onNextStep(this.createResult())}>Next Step</Button>
+                    </div>
 
                 </Column>
                 <Column size={1} />
