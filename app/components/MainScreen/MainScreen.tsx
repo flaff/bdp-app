@@ -77,7 +77,7 @@ export default class MainScreen extends React.Component<{}, HomeState> {
                                             <span>views/hotmill-1/view.py</span><span
                                             style={{color: '#aaa'}}>@41da38a</span> by
                                             {' '}
-                                            <UserHighlight name={'flaff'} placement={'bottom'}>
+                                            <UserHighlight name={'aaaaa'} placement={'bottom'}>
                                                 <Link>flaff</Link>
                                             </UserHighlight>
                                         </div>

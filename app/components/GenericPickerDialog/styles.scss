@@ -13,4 +13,18 @@
   .content {
 
   }
+
+  .record {
+    padding: 10px 0;
+    display: block;
+    cursor: pointer;
+
+    &:hover {
+      color: var(--accent);
+    }
+
+    &.selected {
+      background: rgba(#536DFE, 0.3);
+    }
+  }
 }

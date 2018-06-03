@@ -38,7 +38,8 @@ module.exports = {
     ],
       alias: {
         '@components': path.resolve(__dirname, 'app/components'),
-        '@state': path.resolve(__dirname, 'app/state')
+        '@state': path.resolve(__dirname, 'app/state'),
+        '@api': path.resolve(__dirname, 'app/api'),
       }
   },
 

@@ -1,14 +1,13 @@
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import Image from '@components/Image';
-import {IState} from '../../state/index';
-import {TUserState} from '../../state/user.reducer';
+import {StoreState} from '@state';
 import UserHighlight from '@components/UserHighlight';
 
 
 const styles = require('./styles.css');
 
-interface WelcomeScreenProps extends Partial<TUserState> {
+interface WelcomeScreenProps extends ReturnType<typeof stateToProps>, ReturnType<typeof dispatchToProps> {
 }
 
 class WelcomeScreen extends React.Component<WelcomeScreenProps, {}> {
@@ -29,9 +28,9 @@ class WelcomeScreen extends React.Component<WelcomeScreenProps, {}> {
     }
 }
 
-const stateToProps = (state: IState) => ({
-        avatar: state.user.avatar,
-        name: state.user.name
+const stateToProps = (state: StoreState) => ({
+        avatar: state.auth.avatar,
+        name: state.auth.name
     }),
     dispatchToProps = () => ({});
 

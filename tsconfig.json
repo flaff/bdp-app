@@ -11,8 +11,6 @@
       "scripthost"
     ],
 
-    "types": [],
-
     "alwaysStrict": true,
     "strictNullChecks": true,
     "noImplicitAny": false,
@@ -32,7 +30,10 @@
 
     "paths": {
       "@components/*": ["./app/components/*"],
-      "@state/*": ["./app/state/*"]
+      "@state": ["./app/state/index.ts"],
+      "@state/*": ["./app/state/*"],
+      "@api": ["./app/api/index.ts"],
+      "@api/*": ["./app/api/*"]
     }
   },
 

@@ -1,17 +1,16 @@
 import {combineReducers, Reducer} from 'redux';
 import {routerReducer as routing} from 'react-router-redux';
-import counter, {TState as TCounterState} from './counter.reducer';
-import user, {TUserState} from './user.reducer';
+import auth from './reducers/auth';
+
 
 const rootReducer = combineReducers({
-    counter,
-    user,
-    routing: routing as Reducer<any>
+    auth,
+    routing
 });
 
-export interface IState {
-    counter: TCounterState;
-    user: TUserState;
-}
+export type StoreState = {
+    auth: ReturnType<typeof auth>;
+    routing: ReturnType<typeof routing>;
+};
 
 export default rootReducer;

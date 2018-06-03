@@ -5,8 +5,6 @@ import { routerMiddleware, push } from 'react-router-redux';
 import { createLogger } from 'redux-logger';
 import rootReducer from '../state';
 
-import * as counterActions from '../state/counter.actions';
-
 declare const window: Window & {
   __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?(a: any): void;
 };
@@ -17,8 +15,7 @@ declare const module: NodeModule & {
   }
 };
 
-const actionCreators = Object.assign({}, 
-  counterActions,
+const actionCreators = Object.assign({},
   {push}
 );
 

@@ -6,6 +6,8 @@ import Markdown from '@components/Markdown';
 import CodeEditor from '@components/CodeEditor';
 import Link from '@components/Link';
 import {ChangeEvent} from 'react';
+import GenericPickerDialog from '@components/GenericPickerDialog';
+import {RepoType} from '../consts';
 
 export interface GenericStepResult {
     useExistingView?: boolean;
@@ -19,7 +21,7 @@ export interface GenericStepResult {
 interface GenericStepProps {
     className?: string;
     onNextStep: (p: GenericStepResult) => void;
-    name: string;
+    type: RepoType;
 }
 
 interface GenericStepState {
@@ -29,6 +31,7 @@ interface GenericStepState {
     title: string;
     shortDescription: string;
     detailedDescription: string;
+    pickerDialogVisible: boolean;
 }
 
 const generateExtendedDescription = (title: string, shortDescription: string) => (
@@ -38,6 +41,8 @@ ${shortDescription || 'No short description provided'}
 #### Detailed description
 `);
 
+const capitalizeFirst = (string: string) => string[0].toUpperCase() + string.substr(1).toLowerCase();
+
 export default class GenericStep extends React.Component<GenericStepProps, GenericStepState> {
     constructor(props) {
         super(props);
@@ -45,13 +50,16 @@ export default class GenericStep extends React.Component<GenericStepProps, Gener
             useExistingView: false,
             title: '',
             shortDescription: '',
-            detailedDescription: ''
+            detailedDescription: '',
+            pickerDialogVisible: false
         };
 
         this.onTitleChange = this.onTitleChange.bind(this);
         this.onShortDescriptionChange = this.onShortDescriptionChange.bind(this);
         this.onDetailedDescriptionChange = this.onDetailedDescriptionChange.bind(this);
         this.onUseExistingSwitchChange = this.onUseExistingSwitchChange.bind(this);
+        this.onExistingPickCancelled = this.onExistingPickCancelled.bind(this);
+        this.onExistingPicked = this.onExistingPicked.bind(this);
     }
 
     onTitleChange(event: ChangeEvent<HTMLInputElement>) {
@@ -115,12 +123,25 @@ export default class GenericStep extends React.Component<GenericStepProps, Gener
         });
     }
 
+    onExistingPicked(picked: any) {
+        this.setState({
+            title: picked.name
+        })
+    }
+
+    onExistingPickCancelled() {
+        this.setState({
+            pickerDialogVisible: false
+        });
+    }
+
     render() {
         return (
             <Row className={classNames(this.props.className)}>
                 <Column size={1} />
                 <Column className={'d-flex flex-column'}>
                     <div className={'spaceAbove d-flex align-items-center'}>
+                        <GenericPickerDialog type={this.props.type} onPicked={this.onExistingPicked} onCancelled={this.onExistingPickCancelled} />
                         <Switch checked={this.state.useExistingView} onChange={this.onUseExistingSwitchChange} />
                         <div>
                             {' Use existing view'}
@@ -129,8 +150,8 @@ export default class GenericStep extends React.Component<GenericStepProps, Gener
                     </div>
 
                     <div className={classNames({disabledArea: this.state.useExistingView})}>
-                        <div className={'spaceAbove'}>{this.props.name} title</div>
-                        <Input placeholder={`my-${this.props.name.toLowerCase()}-name`} size={'large'} value={this.state.title} onChange={this.onTitleChange} />
+                        <div className={'spaceAbove'}>{capitalizeFirst(this.props.type)} title</div>
+                        <Input placeholder={`my-${this.props.type.toLowerCase()}-name`} size={'large'} value={this.state.title} onChange={this.onTitleChange} />
                         <div className={'smallText'}>Note: only lowercase letters, numbers and hyphens can be used.</div>
 
                         <div className={'spaceAbove'}>Short description (optional)</div>

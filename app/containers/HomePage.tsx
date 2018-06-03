@@ -7,7 +7,7 @@ import ProjectCreation from '@components/ProjectCreation';
 export class HomePage extends React.Component<RouteComponentProps<any>, void> {
   render() {
     return (
-      <ProjectCreation />
+      <MainScreen />
     );
   }
 }

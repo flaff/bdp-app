@@ -2,8 +2,8 @@ import * as React from 'react';
 import {Popover, Icon} from 'antd';
 import Image from '@components/Image';
 import {GETUserHighlight} from '../../api';
-import user from '@state/user.reducer';
 import Link from '@components/Link';
+
 import {TooltipPlacement} from 'antd/lib/tooltip';
 
 const styles = require('./styles.scss');
@@ -30,11 +30,9 @@ export default class UserHighlight extends React.Component<UserHighlightProps, U
         return (
             <div className={styles.popoverContent}>
                 <div className={styles.name}>{this.props.name}</div>
-                {this.state.fetched ? (
-                    <Image base64={this.state.avatar} className={styles.avatar} />
-                ) : (
-                    <Icon type="loading"/>
-                )}
+                {this.state.fetched
+                    ? <Image base64={this.state.avatar} className={styles.avatar} />
+                    : <Icon type="loading"/>}
                 <div>
                     <Link onClick={() => null} className={styles.showProfileLink}>Show profile</Link>
                 </div>
@@ -52,7 +50,7 @@ export default class UserHighlight extends React.Component<UserHighlightProps, U
 
     onVisibleChange(isVisible: boolean) {
         if (isVisible && this.state.fetched !== this.props.name && this.props.name) {
-            GETUserHighlight(this.props.name)
+            GETUserHighlight.fetch({userName: this.props.name})
                 .then(this.onUserData.bind(this))
         }
     }

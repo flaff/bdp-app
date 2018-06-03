@@ -2,8 +2,9 @@ import * as React from 'react';
 import ProjectStep, {ProjectStepResult} from '@components/ProjectCreation/ProjectStep';
 import GenericStep, {GenericStepResult} from '@components/ProjectCreation/GenericStep';
 import * as classNames from 'classnames';
-import {Button, Steps} from 'antd';
+import {Steps} from 'antd';
 import {Column, ContainerFluid, Row} from '@components/Bootstrap';
+import {RepoType} from '@components/ProjectCreation/consts';
 const Step = Steps.Step;
 
 interface ProjectCreationState {
@@ -18,7 +19,7 @@ export default class ProjectCreation extends React.Component<{}, ProjectCreation
     constructor(props) {
         super(props);
         this.state = {
-            currentStep: 0
+            currentStep: 1
         };
         this.onProjectStepFinish = this.onProjectStepFinish.bind(this);
         this.onViewStepFinish = this.onViewStepFinish.bind(this);
@@ -56,12 +57,6 @@ export default class ProjectCreation extends React.Component<{}, ProjectCreation
             currentStep: this.state.currentStep + 1,
             visualization: visualizationStepResult
         });
-
-        console.log({
-            ...this.state,
-            currentStep: this.state.currentStep + 1,
-            visualization: visualizationStepResult
-        });
     }
 
     render() {
@@ -80,9 +75,9 @@ export default class ProjectCreation extends React.Component<{}, ProjectCreation
                         </Column>
                     </Row>
                     {this.state.currentStep === 0 && <ProjectStep onNextStep={this.onProjectStepFinish} className={'flex-fill'} />}
-                    {this.state.currentStep === 1 && <GenericStep onNextStep={this.onViewStepFinish} name={'View'} className={'flex-fill'} />}
-                    {this.state.currentStep === 2 && <GenericStep onNextStep={this.onModelStepFinish} name={'Model'} className={'flex-fill'} />}
-                    {this.state.currentStep === 3 && <GenericStep onNextStep={this.onVisualizationStepFinish} name={'Visualization'} className={'flex-fill'} />}
+                    {this.state.currentStep === 1 && <GenericStep onNextStep={this.onViewStepFinish} type={RepoType.VIEW} className={'flex-fill'} />}
+                    {this.state.currentStep === 2 && <GenericStep onNextStep={this.onModelStepFinish} type={RepoType.MODEL} className={'flex-fill'} />}
+                    {this.state.currentStep === 3 && <GenericStep onNextStep={this.onVisualizationStepFinish} type={RepoType.VISUALIZATION} className={'flex-fill'} />}
                 </ContainerFluid>
             </div>
         )
