@@ -141,7 +141,10 @@ export default class GenericStep extends React.Component<GenericStepProps, Gener
                 <Column size={1} />
                 <Column className={'d-flex flex-column'}>
                     <div className={'spaceAbove d-flex align-items-center'}>
-                        <GenericPickerDialog type={this.props.type} onPicked={this.onExistingPicked} onCancelled={this.onExistingPickCancelled} />
+                        {this.state.pickerDialogVisible &&
+                            <GenericPickerDialog type={this.props.type} onPicked={this.onExistingPicked}
+                                             onCancelled={this.onExistingPickCancelled}/>
+                        }
                         <Switch checked={this.state.useExistingView} onChange={this.onUseExistingSwitchChange} />
                         <div>
                             {' Use existing view'}

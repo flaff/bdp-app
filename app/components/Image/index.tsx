@@ -8,7 +8,9 @@ interface ImageProps {
   className?: string;
 }
 
-const base64Src = (base64: string) => `data:image/png;base64,${base64}`;
+const
+    base64Prefix = 'data:image/png;base64,',
+    base64Src = (base64: string) => base64.indexOf(base64Prefix) === -1 ? `${base64Prefix}${base64}` : base64;
 
 export default (props: ImageProps) => (
   <img src={props.src || props.base64 && base64Src(props.base64)}

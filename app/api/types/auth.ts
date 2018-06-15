@@ -15,7 +15,8 @@ export type AuthRestoreParams = {
 
 export type AuthRestoreResponse = User;
 
-export type AuthRegisterParams = User & {
+export type AuthRegisterParams = {
+    name: string;
     password: string;
 };
 

@@ -6,11 +6,8 @@ import {UserHighlightPayload} from './payloads';
 import {UserHighlightResponse} from './responses';
 export * from './auth';
 
-Fetcher.headers = {
-    'Content-Type': 'application/json'
-};
-
-Fetcher.transform = JSON.stringify;
+Fetcher.prepare = (params) => JSON.stringify(params);
+Fetcher.headers = {'Content-Type': 'application/json'};
 
 const
     BASE_URL = 'http://localhost:6617',

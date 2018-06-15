@@ -199,7 +199,7 @@
     "source-map-support": "^0.5.0",
     "typeface-montserrat": "0.0.54",
     "unfetch": "^3.0.0",
-    "unfetcher": "^1.0.8",
+    "unfetcher": "^1.1.1",
     "uninstall": "0.0.0"
   },
   "devEngines": {

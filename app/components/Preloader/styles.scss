@@ -1,0 +1,43 @@
+:local {
+  .preloader {
+    &.absolute {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+
+      z-index: 1000;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    svg {
+      transform-origin: 50% 50%;
+      animation: rotate 20s linear infinite;
+      width: 100px;
+      height: 100px;
+      stroke: #000;
+    }
+
+    svg polygon {
+      stroke-dasharray: 15;
+      stroke-width: 1;
+      animation: dash 1s ease-in-out infinite;
+      stroke-dashoffset: -2;
+      fill: transparent;
+    }
+  }
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: -2;
+  }
+  to {
+    stroke-dashoffset: 58;
+  }
+}
+

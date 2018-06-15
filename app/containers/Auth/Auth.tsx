@@ -3,11 +3,12 @@ import {connect} from 'react-redux';
 
 import {StoreState} from '@state';
 
-import Image from '@components/Image';
-import {Link} from 'react-router-dom';
+import Image from '../../components/Image/index';
+import {Link, Redirect} from 'react-router-dom';
 import {Button, Input} from 'antd';
-import {Row, Column, Container, ContainerFluid} from '@components/Bootstrap';
-import {loginUser} from '@state/actions';
+import {Row, Column, Container, ContainerFluid} from '../../components/Bootstrap/index';
+import {loginUser, logoutUser, restoreUser} from '../../state/actions/index';
+import Preloader from '../../components/Preloader/index';
 
 const styles = require('./Auth.scss');
 
@@ -55,12 +56,10 @@ class Auth extends React.Component<AuthProps, AuthState> {
     render() {
         return this.props.authorized
             ? (
-                <div>
-                    <h1>Hello, {this.props.userName}</h1>
-                    <div><Image base64={this.props.avatar}/></div>
-                </div>
+                <Redirect to={'/dashboard'} />
             ) : (
                 <ContainerFluid className={'fullHeight ta-c'}>
+                    {this.props.restoring && <Preloader absolute={true} className={'row'} color={'var(--blue)'}/>}
                     <Row className={'fullHeight'}>
                         <Column size={3}/>
                         <Column size={6} className={'flexCenterer'}>
@@ -83,7 +82,7 @@ class Auth extends React.Component<AuthProps, AuthState> {
                                 <Button onClick={this.onLoginClick}
                                         size={'large'}>Login</Button>
                                 <div>
-                                    <Link to={'/dashboard'}>Continue as guest</Link>
+                                    <Link to={'/register'}>Register</Link> or <Link to={'/dashboard'}>continue as guest</Link>
                                 </div>
                             </div>
                         </Column>
@@ -96,13 +95,17 @@ class Auth extends React.Component<AuthProps, AuthState> {
 
 const
     stateToProps = (state: StoreState) => ({
+        token: state.auth.token,
         authorized: state.auth.authorized,
         userName: state.auth.name,
-        avatar: state.auth.avatar
+        avatar: state.auth.avatar,
+        restoring: state.auth.restoring
     }),
 
     dispatchToProps = (dispatch) => ({
-        loginUser: loginUser(dispatch)
+        loginUser: loginUser(dispatch),
+        restoreUser: restoreUser(dispatch),
+        logoutUser: logoutUser(dispatch)
     });
 
 export default connect(

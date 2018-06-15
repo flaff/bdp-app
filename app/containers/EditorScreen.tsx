@@ -4,7 +4,7 @@ import MainScreen from '../components/MainScreen/MainScreen';
 import LoginScreen from './WelcomeScreen';
 import ProjectCreation from '@components/ProjectCreation';
 
-export class HomePage extends React.Component<RouteComponentProps<any>, void> {
+export class EditorScreen extends React.Component<RouteComponentProps<any>, void> {
   render() {
     return (
       <MainScreen />
@@ -12,4 +12,4 @@ export class HomePage extends React.Component<RouteComponentProps<any>, void> {
   }
 }
 
-export default (HomePage as any as React.StatelessComponent<RouteComponentProps<any>>);
+export default (EditorScreen as any as React.StatelessComponent<RouteComponentProps<any>>);

@@ -1,5 +1,5 @@
 import Fetcher from 'unfetcher';
-import {AuthLoginParams, AuthLoginResponse, AuthRegisterParams, AuthRegisterResponse} from '@api/types';
+import {AuthLoginParams, AuthLoginResponse, AuthRegisterParams, AuthRegisterResponse, AuthRestoreParams, AuthRestoreResponse} from '@api/types';
 import Mappings from '@api/mappings';
 
 export const
@@ -9,7 +9,12 @@ export const
     }),
 
     POSTAuthRegister = new Fetcher<AuthRegisterResponse, AuthRegisterParams>({
-        url: Mappings.AUTH_LOGIN_URL,
+        url: Mappings.AUTH_REGISTER_URL,
+        method: 'POST'
+    }),
+
+    POSTAuthRestore = new Fetcher<AuthRestoreResponse, AuthRestoreParams>({
+        url: Mappings.AUTH_RESTORE_URL,
         method: 'POST'
     });
 
