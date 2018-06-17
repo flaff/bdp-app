@@ -1,5 +1,21 @@
 :local {
   .md {
+    max-height: 100%;
+    width: 100%;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #eee;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #bbb;
+    }
+
     h1 { font-size: 32px }
     h2 { font-size: 24px }
     h3 { font-size: 20px }
@@ -15,6 +31,29 @@
 
     a {
       color: var(--blue) !important;
+    }
+
+    table {
+      width: 100%;
+    }
+
+
+    tr {
+      background: #fff;
+      border-top: 1px solid #c6cbd1;
+
+      &:nth-child(2n) {
+        background: #f6f8fa;
+      }
+    }
+
+    th {
+      text-align: center;
+    }
+
+    th, td {
+      padding: 6px 12px;
+      border: 1px solid #dfe2e5;
     }
   }
 }

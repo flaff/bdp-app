@@ -10,23 +10,24 @@ import GenericPickerDialog from '@components/GenericPickerDialog';
 import {RepoType} from '../consts';
 
 export interface GenericStepResult {
-    useExistingView?: boolean;
-    existingViewSource?: string;
+    useExistingView: boolean;
+    existingViewSource: string;
 
-    title?: string;
-    shortDescription?: string;
-    detailedDescription?: string;
+    title: string;
+    shortDescription: string;
+    detailedDescription: string;
 }
 
 interface GenericStepProps {
     className?: string;
     onNextStep: (p: GenericStepResult) => void;
+    result: GenericStepResult;
     type: RepoType;
 }
 
 interface GenericStepState {
     useExistingView: boolean;
-    existingViewSource?: string;
+    existingViewSource: string;
 
     title: string;
     shortDescription: string;
@@ -47,10 +48,11 @@ export default class GenericStep extends React.Component<GenericStepProps, Gener
     constructor(props) {
         super(props);
         this.state = {
-            useExistingView: false,
-            title: '',
-            shortDescription: '',
-            detailedDescription: '',
+            useExistingView: this.props.result.useExistingView,
+            title: this.props.result.title,
+            shortDescription: this.props.result.shortDescription,
+            detailedDescription: this.props.result.detailedDescription,
+            existingViewSource: this.props.result.existingViewSource,
             pickerDialogVisible: false
         };
 

@@ -6,15 +6,17 @@ import Markdown from '@components/Markdown';
 import CodeEditor from '@components/CodeEditor';
 import Link from '@components/Link';
 import {ChangeEvent} from 'react';
+import {GenericStepResult} from '@components/ProjectCreation/GenericStep';
 
 export interface ProjectStepResult {
     title: string;
     shortDescription: string;
-    detailedDescription?: string;
+    detailedDescription: string;
 }
 
 interface ProjectStepProps {
-    className?: string;
+    className: string;
+    result: ProjectStepResult;
     onNextStep: (p: ProjectStepResult) => void;
 }
 
@@ -35,9 +37,9 @@ export default class ProjectStep extends React.Component<ProjectStepProps, Proje
     constructor(props) {
         super(props);
         this.state = {
-            projectTitle: '',
-            projectShortDescription: '',
-            projectDetailedDescription: ''
+            projectTitle: this.props.result.title,
+            projectShortDescription: this.props.result.shortDescription,
+            projectDetailedDescription: this.props.result.detailedDescription
         };
         this.onProjectTitleChange = this.onProjectTitleChange.bind(this);
         this.onProjectDetailedDescriptionChange = this.onProjectDetailedDescriptionChange.bind(this);

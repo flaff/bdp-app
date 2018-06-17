@@ -13,8 +13,6 @@ const port = process.env.PORT || 3000;
 module.exports = merge(baseConfig, {
     devtool: 'inline-source-map',
 
-    historyApiFallback: true,
-
     entry: [
         'react-hot-loader/patch',
         `webpack-hot-middleware/client?path=http://localhost:${port}/__webpack_hmr&reload=true`,
