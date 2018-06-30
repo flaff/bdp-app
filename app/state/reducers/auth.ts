@@ -58,7 +58,7 @@ const
         restoring: false
     }),
 
-    authRestoreErrorReducer = (state: AuthState, action: ReturnType<typeof AUTH_RESTORE.SUCCESS>): AuthState => ({
+    authRestoreErrorReducer = (state: AuthState, action: ReturnType<typeof AUTH_RESTORE.ERROR>): AuthState => ({
         ...state,
         restoring: false
     });
@@ -66,7 +66,7 @@ const
 Fetcher.headers = Fetcher.headers || {};
 Fetcher.headers['AUTH-TOKEN'] = getToken();
 
-export default function authReducer(state: AuthState, action: IAction<any>) {
+export default function authReducer(state: AuthState, action: IAction<any>): AuthState {
     switch (action.type) {
         case AUTH_RESTORE.START.type:
             return authRestoreStartReducer(state, action);

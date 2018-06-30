@@ -103,7 +103,7 @@ const
     constructor(props) {
         super(props);
         this.state = {
-            creating: true,
+            creating: false,
             projectTimeline: mockPendingTimeline,
             viewTimeline: mockFailedTimeline,
             modelTimeline: mockFinishedTimeline,

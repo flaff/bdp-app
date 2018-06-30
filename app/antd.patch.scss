@@ -7,4 +7,14 @@
       border-color: white !important;
     }
   }
+
+  .ant-popover-inner-content {
+    border: 1px solid var(--gray);
+    border-radius: 5px;
+  }
+
+  .ant-popover-placement-bottomRight .ant-popover-arrow {
+    border-top: 1px solid var(--gray);
+    border-left: 1px solid var(--gray);
+  }
 }

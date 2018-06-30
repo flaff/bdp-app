@@ -1,9 +1,9 @@
 const
     mkdirp = require('mkdirp'),
     {promisify} = require('util'),
-    mkdirpPromisifed = promisify(mkdirp);
+    asyncMkdirp = promisify(mkdirp);
 
 const
-    createFolder = (path) => mkdirpPromisifed(path);
+    createFolder = (path) => asyncMkdirp(path);
 
 module.exports = createFolder;

@@ -1,4 +1,5 @@
 const { app, BrowserWindow, Menu, shell } = require('electron');
+require('./electron/handlers');
 
 let menu;
 let template;

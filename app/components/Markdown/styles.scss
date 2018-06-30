@@ -40,7 +40,7 @@
 
     tr {
       background: #fff;
-      border-top: 1px solid #c6cbd1;
+      border-top: 1px solid var(--gray);
 
       &:nth-child(2n) {
         background: #f6f8fa;
