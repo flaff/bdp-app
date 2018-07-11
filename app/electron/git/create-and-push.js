@@ -7,39 +7,39 @@ const
     createFolder = require('./utils/create-folder'),
     createFile = require('./utils/create-file');
 
-    // createRepoPayload = {
-    //     user: {
-    //         name: 'flaff',
-    //         email: 'flaff@email.com'
-    //     },
-    //     repository: {
-    //         address: 'http://localhost:7617',
-    //         name: 'flaff/views/some-view',
-    //         type: 'VIEW',
-    //         files: [
-    //             {
-    //                 name: 'README.md',
-    //                 content: '### markdown readme\n[google](http://google.pl)'
-    //             },
-    //             {
-    //                 name: 'view.py',
-    //                 content:
-    //                 '# created ' + moment().format('HH:mm DD.MM.YYYY') + '\n' +
-    //                 'import pandas as pd\nimport numpy as np'
-    //             }
-    //         ]
-    //     }
-    // };
+// createRepoPayload = {
+//     user: {
+//         name: 'flaff',
+//         email: 'flaff@email.com'
+//     },
+//     repository: {
+//         address: 'http://localhost:7617',
+//         name: 'flaff/views/some-view',
+//         type: 'VIEW',
+//         files: [
+//             {
+//                 name: 'README.md',
+//                 content: '### markdown readme\n[google](http://google.pl)'
+//             },
+//             {
+//                 name: 'view.py',
+//                 content:
+//                 '# created ' + moment().format('HH:mm DD.MM.YYYY') + '\n' +
+//                 'import pandas as pd\nimport numpy as np'
+//             }
+//         ]
+//     }
+// };
 
 const
     createAndPush = (dispatch) => ({payload: createRepoPayload}) => {
-        const emit = (type, payload) => {
-            dispatch({
-                source: payload.repository.name,
+        const
+            emit = (type, payload) => dispatch({
+                source: createRepoPayload.repository.name,
                 type: createRepoPayload.repository.type + '.' + type,
                 payload
-            })
-        },
+            }),
+
             emitProxy = (type, payload) => (value) =>
                 emit(type, payload !== undefined ? payload : value) || value,
 
@@ -55,7 +55,7 @@ const
         emit('CREATE_FOLDER_START');
         return createFolder(path.resolve(__dirname, createRepoPayload.repository.name))
             .then(emitProxy('CREATE_FOLDER_FINISH'))
-        // init repository
+            // init repository
             .then(() => {
                 emit('CREATE_REPOSITORY_START');
                 return nodegit.Repository.init(path.resolve(__dirname, createRepoPayload.repository.name), 0)

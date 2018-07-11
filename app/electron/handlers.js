@@ -3,9 +3,9 @@ const {ipcMain} = require('electron');
 const createAndPush = require('./git/create-and-push');
 
 const createDispatch = (event) =>
-    (type, payload) => {
-        console.log(type, payload);
-        event.sender.send('ACTION', {type, payload})
+    (action) => {
+        console.log(action);
+        event.sender.send('ACTION', action);
     };
 
 ipcMain.on('ACTION', (event, action) => {

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {Popover, Icon} from 'antd';
 import Image from '@components/Image';
-import {GETUserHighlight} from '../../api';
+import {GETUserHighlight} from '@api';
 import Link from '@components/Link';
 
 import {TooltipPlacement} from 'antd/lib/tooltip';
