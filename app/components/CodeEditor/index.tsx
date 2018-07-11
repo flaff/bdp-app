@@ -4,7 +4,7 @@ import MonacoEditor, {MonacoDiffEditor} from 'react-monaco-editor';
 
 interface CodeEditorProps {
     value?: string;
-    onChange?(val: string, ev: monaco.editor.IModelContentChangedEvent): void;
+    onChange?(val: string, ev: any): void;
     language?: string;
     height?: string;
 }

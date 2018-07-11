@@ -1,5 +1,6 @@
-import ICodeEditor = monaco.editor.ICodeEditor;
 import {defineXCodeTheme} from "./MonacoTheme";
+import {editor} from 'monaco-editor';
+import ICodeEditor = editor.ICodeEditor;
 
 const RESIZE_TIMEOUT = 250;
 

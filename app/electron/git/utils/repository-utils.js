@@ -1,8 +1,8 @@
 const
     nodegit = require('nodegit'),
     path = require('path'),
-    promisify = require('promisify-node'),
-    fse = promisify(require('fs-extra')),
+    Promise = require('bluebird'),
+    fse = require('fs-extra-promisify'),
 
     createFile = require('./create-file'),
     createFolder = require('./create-folder'),
@@ -11,7 +11,7 @@ const
     fileContent = '### something i guess',
     repoDir = 'flaff/views/create-repo-test',
 
-    asyncEnsureDir = promisify(fse.ensureDir);
+    asyncEnsureDir = Promise.promisify(fse.ensureDir);
 
 let repository,
     index,
