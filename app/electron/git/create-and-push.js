@@ -36,7 +36,7 @@ const
         const
             emit = (type, payload) => dispatch({
                 source: createRepoPayload.repository.name,
-                type: createRepoPayload.repository.type + '.' + type,
+                type: createRepoPayload.repository.type.toUpperCase() + '_' + type,
                 payload
             }),
 
@@ -54,13 +54,13 @@ const
 
         emit('CREATE_FOLDER_START');
         return createFolder(path.resolve(__dirname, createRepoPayload.repository.name))
-            .then(emitProxy('CREATE_FOLDER_FINISH'))
+            .then(emitProxy('CREATE_FOLDER_SUCCESS'))
             // init repository
             .then(() => {
                 emit('CREATE_REPOSITORY_START');
                 return nodegit.Repository.init(path.resolve(__dirname, createRepoPayload.repository.name), 0)
             })
-            .then(emitProxy('CREATE_REPOSITORY_FINISH'))
+            .then(emitProxy('CREATE_REPOSITORY_SUCCESS'))
 
             .then((repo) => {
                 repository = repo;
@@ -76,7 +76,7 @@ const
                 } catch (e) {
                     emitProxyError('CREATE_FILES_ERROR')(e);
                 }
-                emit('CREATE_FILES_FINISH');
+                emit('CREATE_FILES_SUCCESS');
             })
             .then(() => repository.refreshIndex())
             .then((i) => index = i)
@@ -89,13 +89,13 @@ const
             .then(() => {
                 emit('ADD_CHANGES_START');
                 return addChanges(index)
-                    .then(emitProxy('ADD_CHANGES_FINISH'))
+                    .then(emitProxy('ADD_CHANGES_SUCCESS'))
                     .catch(emitProxyError('ADD_CHANGES_ERROR'))
             })
             .then((oid) => {
                 emit('COMMIT_START');
                 return addInitialCommit(repository, createRepoPayload.user)(oid)
-                    .then(emitProxy('COMMIT_FINISH'))
+                    .then(emitProxy('COMMIT_SUCCESS'))
                     .catch(emitProxyError('COMMIT_ERROR'))
             })
             .then(() => {
@@ -103,13 +103,13 @@ const
                 return addRemote(repository,
                     createRepoPayload.repository.address.replace('http://', 'http://' + createRepoPayload.user.name + ':' + createRepoPayload.user.name + '@')
                     + '/' + createRepoPayload.repository.name)
-                    .then(emitProxy('ADD_REMOTE_FINISH'))
+                    .then(emitProxy('ADD_REMOTE_SUCCESS'))
                     .catch(emitProxyError('ADD_REMOTE_ERROR'))
             })
             .then((remote) => {
                 emit('PUSH_CHANGES_START');
                 return pushChanges(remote)
-                    .then(emitProxy('PUSH_CHANGES_FINISH'))
+                    .then(emitProxy('PUSH_CHANGES_SUCCESS'))
                     .catch(emitProxyError('PUSH_CHANGES_ERROR'))
             })
             .catch((e) => emit('CREATE_AND_PUSH_ERROR', e));

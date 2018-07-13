@@ -21,6 +21,8 @@ export const
         return {
             SUCCESS: createAction<SuccessType>(`${name}_SUCCESS`),
             ERROR: createAction<ErrorType>(`${name}_ERROR`),
-            START: createAction(`${name}_START`)
+            START: createAction(`${name}_START`),
+            type: name,
+            test: (type: string) => type.startsWith(name)
         };
     };

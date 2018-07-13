@@ -1,15 +1,19 @@
 import * as React from 'react';
 import * as classNames from 'classnames';
+import * as moment from 'moment';
 import {Button, Input, Switch, Timeline} from 'antd';
 import {Row, Column} from '@components/Bootstrap';
 import {ChangeEvent} from 'react';
 import {GenericStepResult} from '@components/ProjectCreation/GenericStep';
 import {ProjectStepResult} from '@components/ProjectCreation/ProjectStep';
+import {connect} from 'react-redux';
+import {StoreState} from '@state';
+import {createAndPushRepository} from '@state/actions/projectCreation';
 
 export interface SummaryStepResult {
 }
 
-interface SummaryStepProps {
+interface SummaryStepPassedProps {
     onNextStep: (p: SummaryStepResult) => void;
     className?: string;
     projectResult: ProjectStepResult;
@@ -18,18 +22,10 @@ interface SummaryStepProps {
     visualizationResult: GenericStepResult;
 }
 
-interface StepTimeline {
-    pendingStep?: string;
-    failedStep?: string;
-    finishedSteps: Array<string>;
-}
+type SummaryStepProps = ReturnType<typeof stateToProps> & ReturnType<typeof dispatchToProps>;
 
 interface SummaryStepState {
     creating: boolean;
-    projectTimeline: StepTimeline;
-    viewTimeline: StepTimeline;
-    modelTimeline: StepTimeline;
-    visualizationTimeline: StepTimeline;
 }
 
 const
@@ -49,7 +45,7 @@ const
         </div>
     ),
 
-    StepTimeline = (props: {name: string, finishedSteps: Array<string>, pendingStep?: string, failedStep?: string}) => (
+    StepTimeline = (props: { name: string, finishedSteps: Array<string>, pendingStep?: string, failedStep?: string }) => (
         <div className={'mb-5'}>
             <h5 className={'mb-4'}>{props.name}</h5>
             <Timeline pending={props.pendingStep}>
@@ -57,58 +53,45 @@ const
                 {props.failedStep && <Timeline.Item color={'red'}>{props.failedStep}</Timeline.Item>}
             </Timeline>
         </div>
-    ),
-
-    mockPendingTimeline: StepTimeline = {
-        finishedSteps: [
-            'Create folder',
-            'Initialize repository',
-            'Create files',
-            'Add files',
-            'Commit files'
-        ],
-        pendingStep: 'Push files'
-    },
-
-    mockPending2Timeline: StepTimeline = {
-        finishedSteps: [
-            'Create folder',
-            'Initialize repository'
-        ],
-        pendingStep: 'Create files'
-    },
+    );
 
 
-    mockFailedTimeline: StepTimeline = {
-        finishedSteps: [
-            'Create folder',
-            'Initialize repository'
-        ],
-        failedStep: 'Create files'
-    },
-
-    mockFinishedTimeline: StepTimeline = {
-        finishedSteps: [
-            'Create folder',
-            'Initialize repository',
-            'Create files',
-            'Add files',
-            'Commit files',
-            'Push files'
-        ]
-    };
-
-
-    export default class SummaryStep extends React.Component<SummaryStepProps, SummaryStepState> {
+class SummaryStep extends React.Component<SummaryStepProps, SummaryStepState> {
     constructor(props) {
         super(props);
         this.state = {
-            creating: false,
-            projectTimeline: mockPendingTimeline,
-            viewTimeline: mockFailedTimeline,
-            modelTimeline: mockFinishedTimeline,
-            visualizationTimeline: mockPending2Timeline
+            creating: false
         };
+
+        this.onCreateClick = this.onCreateClick.bind(this);
+    }
+
+    onCreateClick() {
+        this.setState({
+            ...this.state,
+            creating: true
+        });
+        this.props.createAndPushRepository({
+            user: {
+                name: this.props.userName,
+                email: this.props.userMail,
+            },
+            repository: {
+                type: 'VIEW',
+                address: 'http://localhost:7617',
+                name: `${this.props.userName}/view/${this.props.viewResult.title}`,
+                files: [
+                    {
+                        name: 'README.md',
+                        content: this.props.viewResult.detailedDescription
+                    },
+                    {
+                        name: 'view.py',
+                        content: '# created ' + moment().format('HH:mm DD.MM.YYYY') + '\n' + 'import pandas as pd\nimport numpy as np'
+                    }
+                ]
+            }
+        })
     }
 
     render() {
@@ -117,30 +100,30 @@ const
                 <Column size={2}/>
                 <Column className={'d-flex flex-column'}>
                     <StepTimeline name={'Project'}
-                                  finishedSteps={this.state.projectTimeline.finishedSteps}
-                                  pendingStep={this.state.projectTimeline.pendingStep}
-                                  failedStep={this.state.projectTimeline.failedStep}
+                                  finishedSteps={this.props.projectTimeline.finishedSteps}
+                                  pendingStep={this.props.projectTimeline.pendingStep}
+                                  failedStep={this.props.projectTimeline.failedStep}
                     />
                 </Column>
                 <Column className={'d-flex flex-column'}>
                     <StepTimeline name={'View'}
-                                  finishedSteps={this.state.viewTimeline.finishedSteps}
-                                  pendingStep={this.state.viewTimeline.pendingStep}
-                                  failedStep={this.state.viewTimeline.failedStep}
+                                  finishedSteps={this.props.viewTimeline.finishedSteps}
+                                  pendingStep={this.props.viewTimeline.pendingStep}
+                                  failedStep={this.props.viewTimeline.failedStep}
                     />
                 </Column>
                 <Column className={'d-flex flex-column'}>
                     <StepTimeline name={'Model'}
-                                  finishedSteps={this.state.modelTimeline.finishedSteps}
-                                  pendingStep={this.state.modelTimeline.pendingStep}
-                                  failedStep={this.state.modelTimeline.failedStep}
+                                  finishedSteps={this.props.modelTimeline.finishedSteps}
+                                  pendingStep={this.props.modelTimeline.pendingStep}
+                                  failedStep={this.props.modelTimeline.failedStep}
                     />
                 </Column>
                 <Column className={'d-flex flex-column'}>
                     <StepTimeline name={'Visualization'}
-                                  finishedSteps={this.state.visualizationTimeline.finishedSteps}
-                                  pendingStep={this.state.visualizationTimeline.pendingStep}
-                                  failedStep={this.state.visualizationTimeline.failedStep}
+                                  finishedSteps={this.props.visualizationTimeline.finishedSteps}
+                                  pendingStep={this.props.visualizationTimeline.pendingStep}
+                                  failedStep={this.props.visualizationTimeline.failedStep}
                     />
                 </Column>
                 <Column size={2}/>
@@ -158,7 +141,32 @@ const
                     <StepSummary name={'Visualization'} result={this.props.visualizationResult}/>
                 </Column>
                 <Column size={2}/>
+                <Column size={12} className={'ta-c'}>
+                    <Button onClick={this.onCreateClick} size={'large'}>Create</Button>
+                </Column>
             </Row>
         )
     }
 }
+
+const
+    stateToProps = (state: StoreState, ownProps: SummaryStepPassedProps) => ({
+        projectTimeline: state.projectCreation.projectTimeline,
+        viewTimeline: state.projectCreation.viewTimeline,
+        modelTimeline: state.projectCreation.modelTimeline,
+        visualizationTimeline: state.projectCreation.visualizationTimeline,
+        onNextStep: ownProps.onNextStep,
+        className: ownProps.className,
+        projectResult: ownProps.projectResult,
+        viewResult: ownProps.viewResult,
+        modelResult: ownProps.modelResult,
+        visualizationResult: ownProps.visualizationResult,
+        userName: state.auth.name,
+        userMail: `${state.auth.name}@mail.com`
+    }),
+
+    dispatchToProps = (dispatch) => ({
+        createAndPushRepository: createAndPushRepository
+    });
+
+export default connect(stateToProps, dispatchToProps)(SummaryStep) as any;
