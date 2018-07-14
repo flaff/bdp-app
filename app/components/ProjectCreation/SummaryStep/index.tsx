@@ -9,6 +9,9 @@ import {ProjectStepResult} from '@components/ProjectCreation/ProjectStep';
 import {connect} from 'react-redux';
 import {StoreState} from '@state';
 import {createAndPushRepository} from '@state/actions/projectCreation';
+import {RepositoryType, StepTimelineItem} from '@state/types/projectCreation';
+import {Link} from 'react-router-dom';
+const styles = require('./styles.scss');
 
 export interface SummaryStepResult {
 }
@@ -25,7 +28,8 @@ interface SummaryStepPassedProps {
 type SummaryStepProps = ReturnType<typeof stateToProps> & ReturnType<typeof dispatchToProps>;
 
 interface SummaryStepState {
-    creating: boolean;
+    publishing: boolean;
+    published: boolean;
 }
 
 const
@@ -45,12 +49,22 @@ const
         </div>
     ),
 
-    StepTimeline = (props: { name: string, finishedSteps: Array<string>, pendingStep?: string, failedStep?: string }) => (
+    StepTimeline = (props: { name: string, finishedSteps: Array<StepTimelineItem>, pendingStep?: StepTimelineItem, failedStep?: StepTimelineItem }) => (
         <div className={'mb-5'}>
             <h5 className={'mb-4'}>{props.name}</h5>
-            <Timeline pending={props.pendingStep}>
-                {props.finishedSteps.map((step) => <Timeline.Item color={'green'}>{step}</Timeline.Item>)}
-                {props.failedStep && <Timeline.Item color={'red'}>{props.failedStep}</Timeline.Item>}
+            <Timeline pending={props.pendingStep && props.pendingStep.title}>
+                {
+                    props.finishedSteps.map((step) =>
+                        <Timeline.Item color={'green'}>
+                            {step.title}
+                            {step.secondary && <div className={styles.secondaryStepDesc}>{step.secondary}</div>}
+                        </Timeline.Item>
+                    )
+                }
+                {props.failedStep && <Timeline.Item color={'red'}>
+                    {props.failedStep.title}
+                    {props.failedStep.secondary && <div className={styles.secondaryStepDesc}>{props.failedStep.secondary}</div>}
+                </Timeline.Item>}
             </Timeline>
         </div>
     );
@@ -60,42 +74,101 @@ class SummaryStep extends React.Component<SummaryStepProps, SummaryStepState> {
     constructor(props) {
         super(props);
         this.state = {
-            creating: false
+            publishing: false,
+            published: false
         };
 
         this.onCreateClick = this.onCreateClick.bind(this);
     }
 
-    onCreateClick() {
-        this.setState({
-            ...this.state,
-            creating: true
-        });
+    publishProject(result: ProjectStepResult) {
+        const type = 'PROJECT';
         this.props.createAndPushRepository({
             user: {
                 name: this.props.userName,
                 email: this.props.userMail,
             },
             repository: {
-                type: 'VIEW',
+                type,
                 address: 'http://localhost:7617',
-                name: `${this.props.userName}/view/${this.props.viewResult.title}`,
+                name: `${this.props.userName}/${result.title}.${type.toLowerCase()}`,
                 files: [
                     {
                         name: 'README.md',
-                        content: this.props.viewResult.detailedDescription
+                        content: result.detailedDescription
                     },
                     {
-                        name: 'view.py',
-                        content: '# created ' + moment().format('HH:mm DD.MM.YYYY') + '\n' + 'import pandas as pd\nimport numpy as np'
+                        name: 'short_desc.txt',
+                        content: result.shortDescription
+                    },
+                    {
+                        name: `${type.toLowerCase()}.json`,
+                        content: JSON.stringify({
+                            view: `${this.props.userName}/${this.props.viewResult.title}-view`,
+                            model: `${this.props.userName}/${this.props.modelResult.title}-model`,
+                            visualization: `${this.props.userName}/${this.props.visualizationResult.title}-visualization`
+                        })
+                    }
+                ]
+            }
+        });
+    }
+
+    publish(result: GenericStepResult, type: RepositoryType) {
+        this.props.createAndPushRepository({
+            user: {
+                name: this.props.userName,
+                email: this.props.userMail,
+            },
+            repository: {
+                type,
+                address: 'http://localhost:7617',
+                name: `${this.props.userName}/${result.title}.${type.toLowerCase()}`,
+                files: [
+                    {
+                        name: 'README.md',
+                        content: result.detailedDescription
+                    },
+                    {
+                        name: 'short_desc.txt',
+                        content: result.shortDescription
+                    },
+                    {
+                        name: `${type.toLowerCase()}.py`,
+                        content: `# ${type.toLowerCase()} created ${moment().format('HH:mm DD.MM.YYYY')}\n\n`
                     }
                 ]
             }
         })
     }
 
+    onCreateClick() {
+        this.setState({
+            ...this.state,
+            publishing: true
+        });
+
+        this.publish(this.props.viewResult, 'VIEW');
+        this.publish(this.props.modelResult, 'MODEL');
+        this.publish(this.props.visualizationResult, 'VISUALIZATION');
+        this.publishProject(this.props.projectResult);
+    }
+
+    getDerivedStateFromProps(props: SummaryStepProps, state: SummaryStepState) {
+        const published = state.publishing
+            && props.projectTimeline.finishedSteps.length >= 7
+            && props.viewTimeline.finishedSteps.length >= 7
+            && props.modelTimeline.finishedSteps.length >= 7
+            && props.visualizationTimeline.finishedSteps.length >= 7;
+
+        return {
+            ...state,
+            published
+        };
+    }
+
     render() {
-        return this.state.creating ? (
+        return this.state.publishing ? (
             <Row className={classNames(this.props.className, 'mt-5')}>
                 <Column size={2}/>
                 <Column className={'d-flex flex-column'}>
@@ -127,6 +200,12 @@ class SummaryStep extends React.Component<SummaryStepProps, SummaryStepState> {
                     />
                 </Column>
                 <Column size={2}/>
+                <Column size={12} className={'ta-c'}>
+                    {this.state.published &&
+                        <Link to={`project/${this.props.projectResult.title}`}>
+                            <Button size={'large'}>Continue</Button>
+                        </Link>}
+                </Column>
             </Row>
         ) : (
             <Row className={classNames(this.props.className, 'mt-5')}>

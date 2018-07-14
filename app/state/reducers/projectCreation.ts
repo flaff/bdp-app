@@ -47,24 +47,33 @@ const
     isAType = (action: IAction<any>, actionProgressType: 'SUCCESS' | 'ERROR' | 'START') =>
         action.type.endsWith(actionProgressType),
 
-    timelineStartReducer = (timeline: StepTimeline, action: IAction<void>): StepTimeline => ({
+    timelineStartReducer = (timeline: StepTimeline, action: IAction<string>): StepTimeline => ({
         ...timeline,
-        pendingStep: actionToMessage[getPureType(action.type)]
+        pendingStep: {
+            title: actionToMessage[getPureType(action.type)],
+            secondary: (typeof action.payload === 'string') ? action.payload : undefined
+        }
     }),
 
-    timelineSuccessReducer = (timeline: StepTimeline, action: IAction<void>): StepTimeline => ({
+    timelineSuccessReducer = (timeline: StepTimeline, action: IAction<string>): StepTimeline => ({
         ...timeline,
-        pendingStep: '',
+        pendingStep: undefined,
         finishedSteps: [
             ...timeline.finishedSteps,
-            actionToMessage[getPureType(action.type)]
+            {
+                title: actionToMessage[getPureType(action.type)],
+                secondary: (typeof action.payload === 'string') ? action.payload : undefined
+            }
         ]
     }),
 
-    timelineErrorReducer = (timeline: StepTimeline, action: IAction<void>): StepTimeline => ({
+    timelineErrorReducer = (timeline: StepTimeline, action: IAction<string>): StepTimeline => ({
         ...timeline,
-        pendingStep: '',
-        failedStep: actionToMessage[getPureType(action.type)]
+        pendingStep: undefined,
+        failedStep: {
+            title: actionToMessage[getPureType(action.type)],
+            secondary: (typeof action.payload === 'string') ? action.payload : undefined
+        }
     }),
 
     timelineReducer = (timeline: StepTimeline, action: IAction<any>): StepTimeline => {

@@ -14,7 +14,7 @@ const
 //     },
 //     repository: {
 //         address: 'http://localhost:7617',
-//         name: 'flaff/views/some-view',
+//         name: 'flaff/some.view',
 //         type: 'VIEW',
 //         files: [
 //             {
@@ -32,8 +32,10 @@ const
 // };
 
 const
-    createAndPush = (dispatch) => ({payload: createRepoPayload}) => {
+    createAndPush = (dispatch) => (action) => {
         const
+            createRepoPayload = action.payload,
+
             emit = (type, payload) => dispatch({
                 source: createRepoPayload.repository.name,
                 type: createRepoPayload.repository.type.toUpperCase() + '_' + type,

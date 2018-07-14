@@ -62,6 +62,7 @@ export default class GenericStep extends React.Component<GenericStepProps, Gener
         this.onUseExistingSwitchChange = this.onUseExistingSwitchChange.bind(this);
         this.onExistingPickCancelled = this.onExistingPickCancelled.bind(this);
         this.onExistingPicked = this.onExistingPicked.bind(this);
+        this.generateExtendedDescription = this.generateExtendedDescription.bind(this);
     }
 
     onTitleChange(event: ChangeEvent<HTMLInputElement>) {
@@ -173,6 +174,7 @@ export default class GenericStep extends React.Component<GenericStepProps, Gener
                         <Column>
                             <CodeEditor
                                 language={'markdown'}
+                                wordWrap={true}
                                 value={this.state.detailedDescription}
                                 onChange={this.onDetailedDescriptionChange} /></Column>
 

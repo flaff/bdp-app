@@ -105,6 +105,7 @@ export default class ProjectStep extends React.Component<ProjectStepProps, Proje
                         <Column>
                             <CodeEditor
                                 language={'markdown'}
+                                wordWrap={true}
                                 value={this.state.projectDetailedDescription}
                                 onChange={this.onProjectDetailedDescriptionChange} /></Column>
 

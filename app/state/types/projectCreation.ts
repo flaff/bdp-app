@@ -4,10 +4,15 @@ export type RepositoryFileDf = {
     content: string;
 };
 
+export type StepTimelineItem = {
+    title: string;
+    secondary?: string;
+};
+
 export type StepTimeline = {
-    pendingStep?: string;
-    failedStep?: string;
-    finishedSteps: Array<string>;
+    pendingStep?: StepTimelineItem;
+    failedStep?: StepTimelineItem;
+    finishedSteps: Array<StepTimelineItem>;
 };
 
 export type CreateAndPushRepositoryPayload = {
