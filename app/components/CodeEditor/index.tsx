@@ -7,6 +7,7 @@ interface CodeEditorProps {
     onChange?(val: string, ev: any): void;
     language?: string;
     height?: string;
+    wordWrap?: boolean;
 }
 
 const
@@ -41,7 +42,10 @@ export default class CodeEditor extends React.Component<CodeEditorProps> {
                 theme={'xcode'}
                 language={props.language}
                 editorDidMount={this.onEditorDidMount}
-                options={defaultEditorOptions}
+                options={{
+                    ...defaultEditorOptions,
+                    wordWrap: this.props.wordWrap
+                }}
             />
         )
     }

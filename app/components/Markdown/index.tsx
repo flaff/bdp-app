@@ -2,6 +2,7 @@ import * as React from 'react';
 import * as ReactMarkdown from 'react-markdown';
 import linkRenderer from './link';
 import codeRenderer from './code';
+import textRenderer from './text';
 
 const styles = require('./styles.scss');
 
@@ -14,7 +15,8 @@ const Markdown = (props: MarkdownProps) => {
         className={styles.md}
         renderers={{
             'link': linkRenderer,
-            'code': codeRenderer
+            'code': codeRenderer,
+            'text': textRenderer
         }}
         {...props} />
 };
