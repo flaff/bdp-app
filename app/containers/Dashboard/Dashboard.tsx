@@ -40,6 +40,13 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
                             </Link>
                         </Column>
                         <Column size={3} />
+                        <Column size={3} />
+                        <Column size={3}>
+                            <Link to={'/project/flaff/test'}>
+                            <Icon type="search" className={styles.primaryIcon} />
+                            <div className={styles.primaryName}>Debug project /flaff/test</div>
+                            </Link>
+                        </Column>
                     </Row>
                 </ContainerFluid>
             </div>

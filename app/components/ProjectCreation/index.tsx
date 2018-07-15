@@ -1,11 +1,12 @@
 import * as React from 'react';
-import ProjectStep, {ProjectStepResult} from '@components/ProjectCreation/ProjectStep';
-import GenericStep, {GenericStepResult} from '@components/ProjectCreation/GenericStep';
+import GenericStep, {GenericStepResult, ProjectStepResult} from '@components/ProjectCreation/GenericStep';
 import * as classNames from 'classnames';
 import {Steps} from 'antd';
 import {Column, ContainerFluid, Row} from '@components/Bootstrap';
 import {RepoType} from '@components/ProjectCreation/consts';
 import SummaryStep from '@components/ProjectCreation/SummaryStep';
+import GenericPickerDialog from '@components/GenericPickerDialog';
+
 
 const Step = Steps.Step;
 
@@ -21,13 +22,13 @@ const
     emptyProjectState: ProjectStepResult = {
         title: '',
         shortDescription: '',
-        detailedDescription: ''
+        detailedDescription: '### %TITLE% `.%TYPE%`\n%SHORT_DESCRIPTION%\n\n#### Detailed description\n'
     },
 
     emptyGenericStepState: GenericStepResult = {
         title: '',
         shortDescription: '',
-        detailedDescription: '',
+        detailedDescription: '### %TITLE% `.%TYPE%`\n%SHORT_DESCRIPTION%\n\n#### Detailed description\n',
         existingViewSource: '',
         useExistingView: false
     };
@@ -134,8 +135,9 @@ export default class ProjectCreation extends React.Component<{}, ProjectCreation
                         <Column size={1}/>
                     </Row>
                     {this.state.currentStep === 0 &&
-                    <ProjectStep onNextStep={this.onProjectStepFinish}
-                                 result={this.state.project}
+                    <GenericStep onNextStep={this.onProjectStepFinish}
+                                 result={this.state.project as GenericStepResult}
+                                 type={RepoType.PROJECT}
                                  className={'flex-fill'} />}
                     {this.state.currentStep === 1 &&
                     <GenericStep onNextStep={this.onViewStepFinish}

@@ -1,0 +1,43 @@
+:local {
+  .projectName {
+    padding: 10px;
+    font-size: 28px;
+    font-weight: 700;
+  }
+
+  .repositoryType, .repositoryTypeSecondary {
+    background: #efefef;
+    border-radius: 6px;
+    font-family: 'Inconsolata', sans-serif;
+    padding: 5px;
+    color: inherit;
+    font-size: 50%;
+    vertical-align: middle;
+  }
+
+  .secondary {
+    font-size: 80%;
+    opacity: 0.8;
+  }
+
+  .repositoryTabs {
+    width: 100%;
+
+    :global(.ant-menu-submenu-title) {
+      > div {
+        line-height: 1.3 !important;
+        margin-top: 3px;
+      }
+    }
+
+    :global(li.ant-menu-item) {
+      padding-top: 3px;
+      line-height: 1.3 !important;
+    }
+  }
+
+  .rightSidebar {
+    width: 100px !important;
+    flex-grow: 0 !important;
+  }
+}

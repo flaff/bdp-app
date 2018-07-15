@@ -9,6 +9,12 @@ import {ChangeEvent} from 'react';
 import GenericPickerDialog from '@components/GenericPickerDialog';
 import {RepoType} from '../consts';
 
+export interface ProjectStepResult {
+    title: string;
+    shortDescription: string;
+    detailedDescription: string;
+}
+
 export interface GenericStepResult {
     useExistingView: boolean;
     existingViewSource: string;
@@ -35,13 +41,6 @@ interface GenericStepState {
     pickerDialogVisible: boolean;
 }
 
-const generateExtendedDescription = (title: string, shortDescription: string) => (
-    `### ${title || 'No title provided'}
-${shortDescription || 'No short description provided'}
-
-#### Detailed description
-`);
-
 const capitalizeFirst = (string: string) => string[0].toUpperCase() + string.substr(1).toLowerCase();
 
 export default class GenericStep extends React.Component<GenericStepProps, GenericStepState> {
@@ -62,13 +61,13 @@ export default class GenericStep extends React.Component<GenericStepProps, Gener
         this.onUseExistingSwitchChange = this.onUseExistingSwitchChange.bind(this);
         this.onExistingPickCancelled = this.onExistingPickCancelled.bind(this);
         this.onExistingPicked = this.onExistingPicked.bind(this);
-        this.generateExtendedDescription = this.generateExtendedDescription.bind(this);
+        this.getDisplayDetailedDesc = this.getDisplayDetailedDesc.bind(this);
     }
 
     onTitleChange(event: ChangeEvent<HTMLInputElement>) {
         this.setState({
             ...this.state,
-            title: event.target.value
+            title: event.target.value.toLowerCase().replace(/[ ]/g, '-').replace(/[^a-z0-9\-]/g, '')
         });
     }
 
@@ -85,13 +84,6 @@ export default class GenericStep extends React.Component<GenericStepProps, Gener
             detailedDescription: value
         });
     };
-
-    generateExtendedDescription() {
-        this.setState({
-            ...this.state,
-            detailedDescription: generateExtendedDescription(this.state.title, this.state.shortDescription)
-        })
-    }
 
     onUseExistingSwitchChange(useExistingView: boolean) {
         if (useExistingView) {
@@ -138,6 +130,13 @@ export default class GenericStep extends React.Component<GenericStepProps, Gener
         });
     }
 
+    getDisplayDetailedDesc() {
+        return this.state.detailedDescription
+            .replace(/%TITLE%/g, this.state.title || 'title')
+            .replace(/%TYPE%/g, this.props.type.toLowerCase())
+            .replace(/%SHORT_DESCRIPTION%/g, this.state.shortDescription || 'No short description provided');
+    }
+
     render() {
         return (
             <Row className={classNames(this.props.className)}>
@@ -148,7 +147,7 @@ export default class GenericStep extends React.Component<GenericStepProps, Gener
                             <GenericPickerDialog type={this.props.type} onPicked={this.onExistingPicked}
                                              onCancelled={this.onExistingPickCancelled}/>
                         }
-                        <Switch checked={this.state.useExistingView} onChange={this.onUseExistingSwitchChange} />
+                        {this.props.type !== 'PROJECT' && <Switch checked={this.state.useExistingView} onChange={this.onUseExistingSwitchChange} />}
                         <div>
                             {' Use existing view'}
                             <div className={'smallText'}>{' '}{this.state.existingViewSource}</div>
@@ -157,7 +156,11 @@ export default class GenericStep extends React.Component<GenericStepProps, Gener
 
                     <div className={classNames({disabledArea: this.state.useExistingView})}>
                         <div className={'spaceAbove'}>{capitalizeFirst(this.props.type)} title</div>
-                        <Input placeholder={`my-${this.props.type.toLowerCase()}-name`} size={'large'} value={this.state.title} onChange={this.onTitleChange} />
+                        <Input value={this.state.title}
+                               onChange={this.onTitleChange}
+                               size={'large'}
+                               placeholder={`my-${this.props.type.toLowerCase()}-name`}
+                               addonAfter={`.${this.props.type.toLowerCase()}`} />
                         <div className={'smallText'}>Note: only lowercase letters, numbers and hyphens can be used.</div>
 
                         <div className={'spaceAbove'}>Short description (optional)</div>
@@ -165,8 +168,6 @@ export default class GenericStep extends React.Component<GenericStepProps, Gener
 
                         <div className={'spaceAbove'}>
                             Detailed <Link href={'https://www.markdownguide.org/getting-started'}>Markdown</Link> description (optional).
-                            {' '}
-                            <Link onClick={this.generateExtendedDescription}>Generate from above</Link>
                         </div>
                     </div>
 
@@ -178,7 +179,7 @@ export default class GenericStep extends React.Component<GenericStepProps, Gener
                                 value={this.state.detailedDescription}
                                 onChange={this.onDetailedDescriptionChange} /></Column>
 
-                        <Column><Markdown source={this.state.detailedDescription} /></Column>
+                        <Column><Markdown source={this.getDisplayDetailedDesc()} /></Column>
                     </Row>
 
                     <div className={'ta-c pd'}>

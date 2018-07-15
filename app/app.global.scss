@@ -23,6 +23,15 @@ body {
   height: 100%;
 }
 
+.flexVertical {
+  display: flex;
+  flex-direction: column;
+}
+
+.flexGrow {
+  flex: 1 1 auto;
+}
+
 .flexCenterer {
   display: flex;
   align-items: center;

@@ -4,8 +4,7 @@ import * as moment from 'moment';
 import {Button, Input, Switch, Timeline} from 'antd';
 import {Row, Column} from '@components/Bootstrap';
 import {ChangeEvent} from 'react';
-import {GenericStepResult} from '@components/ProjectCreation/GenericStep';
-import {ProjectStepResult} from '@components/ProjectCreation/ProjectStep';
+import {GenericStepResult, ProjectStepResult} from '@components/ProjectCreation/GenericStep';
 import {connect} from 'react-redux';
 import {StoreState} from '@state';
 import {createAndPushRepository} from '@state/actions/projectCreation';
@@ -79,6 +78,7 @@ class SummaryStep extends React.Component<SummaryStepProps, SummaryStepState> {
         };
 
         this.onCreateClick = this.onCreateClick.bind(this);
+        this.isPublished = this.isPublished.bind(this);
     }
 
     publishProject(result: ProjectStepResult) {
@@ -92,16 +92,16 @@ class SummaryStep extends React.Component<SummaryStepProps, SummaryStepState> {
                 type,
                 address: 'http://localhost:7617',
                 name: `${this.props.userName}/${result.title}.${type.toLowerCase()}`,
-                files: [
-                    {
+                files: {
+                    ['README.md']: {
                         name: 'README.md',
                         content: result.detailedDescription
                     },
-                    {
+                    ['short_desc.txt']: {
                         name: 'short_desc.txt',
                         content: result.shortDescription
                     },
-                    {
+                    [`${type.toLowerCase()}.json`]: {
                         name: `${type.toLowerCase()}.json`,
                         content: JSON.stringify({
                             view: `${this.props.userName}/${this.props.viewResult.title}-view`,
@@ -109,7 +109,7 @@ class SummaryStep extends React.Component<SummaryStepProps, SummaryStepState> {
                             visualization: `${this.props.userName}/${this.props.visualizationResult.title}-visualization`
                         })
                     }
-                ]
+                }
             }
         });
     }
@@ -124,22 +124,30 @@ class SummaryStep extends React.Component<SummaryStepProps, SummaryStepState> {
                 type,
                 address: 'http://localhost:7617',
                 name: `${this.props.userName}/${result.title}.${type.toLowerCase()}`,
-                files: [
-                    {
+                files: {
+                    ['README.md']: {
                         name: 'README.md',
                         content: result.detailedDescription
                     },
-                    {
+                    ['short_desc.txt']: {
                         name: 'short_desc.txt',
                         content: result.shortDescription
                     },
-                    {
+                    [`${type.toLowerCase()}.py`]: {
                         name: `${type.toLowerCase()}.py`,
                         content: `# ${type.toLowerCase()} created ${moment().format('HH:mm DD.MM.YYYY')}\n\n`
                     }
-                ]
+                }
             }
         })
+    }
+
+    isPublished() {
+        return this.state.publishing
+            && this.props.projectTimeline.finishedSteps.length >= 7
+            && this.props.viewTimeline.finishedSteps.length >= 7
+            && this.props.modelTimeline.finishedSteps.length >= 7
+            && this.props.visualizationTimeline.finishedSteps.length >= 7;
     }
 
     onCreateClick() {
@@ -154,23 +162,10 @@ class SummaryStep extends React.Component<SummaryStepProps, SummaryStepState> {
         this.publishProject(this.props.projectResult);
     }
 
-    getDerivedStateFromProps(props: SummaryStepProps, state: SummaryStepState) {
-        const published = state.publishing
-            && props.projectTimeline.finishedSteps.length >= 7
-            && props.viewTimeline.finishedSteps.length >= 7
-            && props.modelTimeline.finishedSteps.length >= 7
-            && props.visualizationTimeline.finishedSteps.length >= 7;
-
-        return {
-            ...state,
-            published
-        };
-    }
-
     render() {
         return this.state.publishing ? (
             <Row className={classNames(this.props.className, 'mt-5')}>
-                <Column size={2}/>
+                <Column size={1}/>
                 <Column className={'d-flex flex-column'}>
                     <StepTimeline name={'Project'}
                                   finishedSteps={this.props.projectTimeline.finishedSteps}
@@ -199,9 +194,9 @@ class SummaryStep extends React.Component<SummaryStepProps, SummaryStepState> {
                                   failedStep={this.props.visualizationTimeline.failedStep}
                     />
                 </Column>
-                <Column size={2}/>
+                <Column size={1}/>
                 <Column size={12} className={'ta-c'}>
-                    {this.state.published &&
+                    {this.isPublished() &&
                         <Link to={`project/${this.props.projectResult.title}`}>
                             <Button size={'large'}>Continue</Button>
                         </Link>}

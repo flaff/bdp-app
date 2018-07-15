@@ -5,7 +5,7 @@ import {StoreState} from '@state';
 
 import Image from '../../components/Image/index';
 import {Link} from 'react-router-dom';
-import {Icon, Popover} from 'antd';
+import {Icon, Popover, Drawer} from 'antd';
 import {loginUser, logoutUser, restoreUser} from '../../state/actions/index';
 import Preloader from '../../components/Preloader/index';
 
@@ -15,17 +15,23 @@ interface UserBarProps extends ReturnType<typeof stateToProps>, ReturnType<typeo
 }
 
 interface UserBarState {
+    drawerVisible: boolean;
 }
 
 class User extends React.Component<UserBarProps, UserBarState> {
     constructor(props) {
         super(props);
 
+        this.state = {
+            drawerVisible: false
+        };
+
         if (props.token && !props.authorized) {
             props.restoreUser({token: props.token});
         }
 
         this.renderPopover = this.renderPopover.bind(this);
+        this.toggleDrawer = this.toggleDrawer.bind(this);
     }
 
     renderPopover() {
@@ -38,6 +44,10 @@ class User extends React.Component<UserBarProps, UserBarState> {
             </div>
         ) : (
             <div className={'ta-c'}>
+                <div className={styles.bigAvatar}>
+                    <Image base64={this.props.avatar}/>
+                </div>
+
                 <div>
                     Logged in as <b>{this.props.userName}</b>
                 </div>
@@ -52,19 +62,31 @@ class User extends React.Component<UserBarProps, UserBarState> {
         )
     }
 
+    toggleDrawer() {
+        this.setState({
+            drawerVisible: !this.state.drawerVisible
+        });
+    }
+
     render() {
         return (
             <div className={styles.userBar}>
-                <Popover placement="bottomRight" content={this.renderPopover()} trigger="click">
-                    <div className={styles.avatar}>
+                {/*<Popover placement="bottomRight" content={this.renderPopover()} trigger="click">*/}
+                    <div className={styles.avatar} onClick={this.toggleDrawer}>
                         <Image base64={this.props.avatar}/>
                         {this.props.restoring && <Preloader size={20} strokeWidth={2} absolute/>}
                         {!this.props.restoring && !this.props.authorized &&
                         <div className={styles.authWarning}>
-                            <Icon type={'warning'}/>
+                            <Icon type={'warning'} />
                         </div>}
                     </div>
-                </Popover>
+                <Drawer
+                    onClose={this.toggleDrawer}
+                    closable={false}
+                    visible={this.state.drawerVisible}>
+                    {this.renderPopover()}
+                </Drawer>
+                {/*</Popover>*/}
             </div>
         );
     }

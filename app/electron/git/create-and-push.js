@@ -70,8 +70,9 @@ const
                 emit('CREATE_FILES_START');
                 // create files
                 try {
-                    createRepoPayload.repository.files.forEach((file) =>
-                        createFile(
+                    Object.keys(createRepoPayload.repository.files)
+                        .map(fileName => createRepoPayload.repository.files[fileName])
+                        .forEach((file) => createFile(
                             path.join(repository.workdir(), file.name),
                             file.content
                         ));
@@ -84,7 +85,7 @@ const
             .then((i) => index = i)
             .then(() => {
                 emit('ADD_FILES_START');
-                return addFiles(createRepoPayload.repository.files.map(file => file.name), index)
+                return addFiles(Object.keys(createRepoPayload.repository.files), index)
                     .then(emitProxy('ADD_FILES_START'))
                     .catch(emitProxyError('ADD_FILES_ERROR'))
             })
