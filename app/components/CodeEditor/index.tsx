@@ -19,6 +19,10 @@ const
 export default class CodeEditor extends React.Component<CodeEditorProps> {
     private editorRef: any;
 
+    static resize() {
+        MonacoResizer.resizeEditor();
+    }
+
     constructor(props) {
         super(props);
         this.onEditorDidMount = this.onEditorDidMount.bind(this);
