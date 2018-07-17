@@ -1,8 +1,48 @@
 :local {
+  .topBar {
+    display: flex;
+    height: 64px;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .topBarIcons {
+    flex: 1 1 auto;
+    text-align: right;
+  }
+
+  .topBarIcon {
+    display: inline-block;
+    cursor: pointer;
+    padding: 0 10px;
+
+    &.disabled {
+      cursor: not-allowed;
+    }
+  }
+
+  .bottomBar {
+    height: 32px;
+    font-size: 12px;
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .bottomBarFileType {
+    display: flex;
+    align-items: center;
+
+    > * {
+      margin: 0 4px;
+    }
+  }
+
   .projectName {
-    padding: 10px;
     font-size: 28px;
     font-weight: 700;
+    padding-left: 20px;
   }
 
   .repositoryType, .repositoryTypeSecondary {
@@ -36,8 +76,26 @@
     }
   }
 
-  .rightSidebar {
-    width: 100px !important;
-    flex-grow: 0 !important;
+  .bottomDrawer {
+    height: calc(100% - 96px);
+    width: 100%;
+    position: fixed;
+    top: 64px;
+    bottom: 32px;
+    left: 0;
+    right: 0;
+    background: white;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    pointer-events: none;
+
+    transition: transform 500ms, opacity 500ms;
+    transform: translateY(100%);
+    opacity: 0;
+
+    &.open {
+      pointer-events: all;
+      transform: translateY(0%);
+      opacity: 1;
+    }
   }
 }

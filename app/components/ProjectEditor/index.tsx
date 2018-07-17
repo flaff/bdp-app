@@ -1,8 +1,8 @@
 import * as React from 'react';
 import {connect} from 'react-redux';
-import {Tabs, Button, notification, Menu} from 'antd';
+import {Tabs, Button, notification, Menu, Icon} from 'antd';
 import {MarkdownIcon} from 'react-octicons';
-import FontAwesome from 'react-fontawesome'
+import * as FontAwesome from 'react-fontawesome';
 
 import {StoreState} from '@state';
 import {Column, Row, ContainerFluid} from '@components/Bootstrap';
@@ -25,6 +25,7 @@ type EditorState = {
     currentRepo: string;
     currentFile: string;
     currentFileType: string;
+    bottomDrawerOpen: boolean;
 };
 
 type RepositoryMenuProps = {
@@ -37,6 +38,17 @@ const
         'py': 'python',
         'md': 'markdown',
         'txt': 'text'
+    },
+
+    fileTypeToIcon = (fileType: string) => {
+        switch (fileType) {
+            case 'python':
+                return (<FontAwesome name={'python'} />);
+            case 'markdown':
+                return <MarkdownIcon />;
+            default:
+                return (<div />);
+        }
     },
 
     capitalizeFirst = (string: string) => string[0].toUpperCase() + string.substr(1).toLowerCase(),
@@ -68,7 +80,8 @@ class ProjectEditor extends React.Component<EditorProps, EditorState> {
         this.state = {
             currentFile: 'view.py',
             currentRepo: 'view',
-            currentFileType: 'python'
+            currentFileType: 'python',
+            bottomDrawerOpen: false
         };
 
         this.onRepoTabClick = this.onRepoTabClick.bind(this);
@@ -77,6 +90,7 @@ class ProjectEditor extends React.Component<EditorProps, EditorState> {
         this.renderVisualization = this.renderVisualization.bind(this);
         this.renderEditor = this.renderEditor.bind(this);
         this.onEditorChange = this.onEditorChange.bind(this);
+        this.onRunClick = this.onRunClick.bind(this);
     }
 
     renderEditors() {
@@ -156,17 +170,39 @@ class ProjectEditor extends React.Component<EditorProps, EditorState> {
         )
     }
 
+    onRunClick() {
+        this.setState({
+            ...this.state,
+            bottomDrawerOpen: !this.state.bottomDrawerOpen
+        });
+    }
+
     render() {
         return (
             <div className={'fullHeight flexVertical'}>
-                <div>
-                    <span className={styles.projectName}>
+                <div className={styles.topBar}>
+                    <div className={styles.projectName}>
                         {this.props.projectName} <span className={styles.repositoryType}>.project</span>
-                    </span>
+                    </div>
+                    <div className={styles.topBarIcons}>
+                        {!this.state.bottomDrawerOpen && <div className={styles.topBarIcon} style={{color: 'var(--green)'}} onClick={this.onRunClick}>
+                            <Icon type="caret-right" /> Run
+                        </div>}
+                        {this.state.bottomDrawerOpen && <div className={styles.topBarIcon} style={{color: 'var(--red)'}} onClick={this.onRunClick}>
+                            <Icon type="loading" /> Stop
+                        </div>}
+                        <div className={styles.topBarIcon}>
+                            <Icon type="arrow-up" /> Publish
+                        </div>
+                        <div className={styles.topBarIcon}>
+                            <Icon type="rollback" /> Revert
+                        </div>
+                    </div>
+                    <div className={'avatarPlaceholder'} />
                 </div>
                 <ContainerFluid className={'flexGrow flexVertical'}>
                     <Row className={'flexGrow'}>
-                        <Column size={2}>
+                        <Column size={3}>
                             <Menu className={classNames(styles.repositoryTabs, 'fullHeight')} mode={'inline'}
                                   defaultSelectedKeys={[`${this.state.currentRepo}/${this.state.currentFile}`]}
                                   defaultOpenKeys={['view', 'model', 'visualization']} onSelect={this.onRepoTabClick}>
@@ -184,17 +220,17 @@ class ProjectEditor extends React.Component<EditorProps, EditorState> {
                         {this.state.currentFileType === 'markdown' && <Column size={4}>
                             <Markdown source={this.getCurrentFileContent()}/>
                         </Column>}
-                        <Column size={1}/>
                     </Row>
                 </ContainerFluid>
-                <div>
-                    <MarkdownIcon/>
-                    <Button onClick={() => notification.error({
-                        message: 'Error',
-                        description: 'an error occured',
-                        duration: 0,
-                        placement: 'bottomRight'
-                    })}>Error</Button>
+                <div className={styles.bottomBar}>
+                    <div className={styles.bottomBarFileType}>
+                        {capitalizeFirst(this.state.currentFileType)} {fileTypeToIcon(this.state.currentFileType)}
+                    </div>
+                    <div style={{color: 'var(--green)'}}>
+                        Ready <Icon type="check-circle" />
+                    </div>
+                </div>
+                <div className={classNames(styles.bottomDrawer, {[styles.open]: this.state.bottomDrawerOpen})}>
                 </div>
             </div>
         )

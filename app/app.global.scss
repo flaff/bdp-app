@@ -64,6 +64,12 @@ body {
   }
 }
 
+.avatarPlaceholder {
+  width: 64px;
+  height: 64px;
+  display: inline-block;
+}
+
 :root {
   --pink: #F50057;
   --green-bright: #00E676;
