@@ -1,9 +1,9 @@
 import {RepositoryFileDf, RepositoryDf} from './projectCreation';
 
 export type RunnableProject = {
-    view: RepositoryFileDf;
-    model: RepositoryFileDf;
-    visualization: RepositoryFileDf;
+    view: string;
+    model: string;
+    visualization: string;
 };
 
 export type EditedProject = {

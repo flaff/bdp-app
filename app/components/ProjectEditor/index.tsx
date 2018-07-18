@@ -12,7 +12,7 @@ import {RepositoryType} from '@state/types/projectCreation';
 import {SelectParam} from 'antd/es/menu';
 import {
     modifyModelFile,
-    modifyViewFile, modifyVisualizationFile
+    modifyViewFile, modifyVisualizationFile, sandboxAndRun
 } from '@state/actions/projectEdition';
 import Markdown from '@components/Markdown';
 
@@ -91,6 +91,9 @@ class ProjectEditor extends React.Component<EditorProps, EditorState> {
         this.renderEditor = this.renderEditor.bind(this);
         this.onEditorChange = this.onEditorChange.bind(this);
         this.onRunClick = this.onRunClick.bind(this);
+        this.toggleDrawer = this.toggleDrawer.bind(this);
+        this.setDrawerVisibility = this.setDrawerVisibility.bind(this);
+        this.parseTextOutput = this.parseTextOutput.bind(this);
     }
 
     renderEditors() {
@@ -170,10 +173,32 @@ class ProjectEditor extends React.Component<EditorProps, EditorState> {
         )
     }
 
-    onRunClick() {
+    toggleDrawer() {
+        this.setDrawerVisibility(!this.state.bottomDrawerOpen);
+    }
+
+    setDrawerVisibility(visible: boolean) {
         this.setState({
             ...this.state,
-            bottomDrawerOpen: !this.state.bottomDrawerOpen
+            bottomDrawerOpen: visible
+        });
+    }
+
+    parseTextOutput(text: string) {
+        return {
+            __html: text
+                .replace(/(\r\n)/g, '\n')
+                .replace(/(\n)/g, '<br>')
+        }
+    }
+
+    onRunClick() {
+        this.setDrawerVisibility(true);
+
+        this.props.sandboxAndRun({
+            view: this.props.view.files['view.py'].content,
+            model: this.props.model.files['model.py'].content,
+            visualization: this.props.visualization.files['visualization.py'].content,
         });
     }
 
@@ -185,10 +210,10 @@ class ProjectEditor extends React.Component<EditorProps, EditorState> {
                         {this.props.projectName} <span className={styles.repositoryType}>.project</span>
                     </div>
                     <div className={styles.topBarIcons}>
-                        {!this.state.bottomDrawerOpen && <div className={styles.topBarIcon} style={{color: 'var(--green)'}} onClick={this.onRunClick}>
+                        {!this.props.running && <div className={styles.topBarIcon} style={{color: 'var(--green)'}} onClick={this.onRunClick}>
                             <Icon type="caret-right" /> Run
                         </div>}
-                        {this.state.bottomDrawerOpen && <div className={styles.topBarIcon} style={{color: 'var(--red)'}} onClick={this.onRunClick}>
+                        {this.props.running && <div className={styles.topBarIcon} style={{color: 'var(--red)'}} onClick={this.onRunClick}>
                             <Icon type="loading" /> Stop
                         </div>}
                         <div className={styles.topBarIcon}>
@@ -226,11 +251,31 @@ class ProjectEditor extends React.Component<EditorProps, EditorState> {
                     <div className={styles.bottomBarFileType}>
                         {capitalizeFirst(this.state.currentFileType)} {fileTypeToIcon(this.state.currentFileType)}
                     </div>
-                    <div style={{color: 'var(--green)'}}>
-                        Ready <Icon type="check-circle" />
+                    <div className={'flex'}>
+                        <div className={styles.toggleBottomDrawer} onClick={this.toggleDrawer}>
+                            <Icon type={this.state.bottomDrawerOpen ? 'down' : 'up'} /> Results
+                        </div>
+                        {!this.props.running && !this.props.error && (
+                            <div style={{color: 'var(--green)'}}>Ready <Icon type="check-circle"/></div>
+                        )}
+                        {this.props.error && (
+                            <div style={{color: 'var(--red)'}}>Error <Icon type="close-circle"/></div>
+                        )}
+                        {this.props.running && (
+                            <div style={{color: 'var(--yellow)'}}>Running <Icon type="clock-circle"/></div>
+                        )}
                     </div>
                 </div>
                 <div className={classNames(styles.bottomDrawer, {[styles.open]: this.state.bottomDrawerOpen})}>
+                    <div className={styles.hideBottomDrawer} onClick={this.toggleDrawer}><Icon type="down" /> Hide</div>
+                    {this.props.error && (
+                        <div className={styles.errorDisplay}>
+                            {this.props.error}
+                        </div>
+                    )}
+                    {this.props.results && (
+                        <div className={styles.resultsDisplay} dangerouslySetInnerHTML={this.parseTextOutput(this.props.results)} />
+                    )}
                 </div>
             </div>
         )
@@ -253,13 +298,18 @@ const
         visualizationHead: state.projectEdition.project.visualization.head,
 
         modelName: 'flaff/test.model',
-        visualizationName: 'flaff/test.visualization'
+        visualizationName: 'flaff/test.visualization',
+
+        error: state.projectEdition.error,
+        results: state.projectEdition.results,
+        running: state.projectEdition.running
     }),
 
     dispatchToProps = (dispatch) => ({
         modifyViewFile: modifyViewFile(dispatch),
         modifyModelFile: modifyModelFile(dispatch),
-        modifyVisualizationFile: modifyVisualizationFile(dispatch)
+        modifyVisualizationFile: modifyVisualizationFile(dispatch),
+        sandboxAndRun: sandboxAndRun(dispatch)
     });
 
 export default connect(stateToProps, dispatchToProps)(ProjectEditor);

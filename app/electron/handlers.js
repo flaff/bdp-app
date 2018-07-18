@@ -1,6 +1,8 @@
 const {ipcMain} = require('electron');
 
-const createAndPush = require('./git/create-and-push');
+const
+    createAndPush = require('./git/create-and-push'),
+    sandboxAndRun = require('./python/sandbox-and-run');
 
 const createDispatch = (event) =>
     (action) => {
@@ -14,6 +16,9 @@ ipcMain.on('ACTION', (event, action) => {
     switch (action.type) {
         case 'CREATE_AND_PUSH_REPOSITORY':
             return createAndPush(dispatch)(action);
+
+        case 'SANDBOX_AND_RUN':
+            return sandboxAndRun(dispatch)(action);
 
         case 'TEST':
             console.log(action);

@@ -1,5 +1,10 @@
 import {IAction} from '@state/actions';
-import {MODIFY_MODEL_FILE, MODIFY_VIEW_FILE, MODIFY_VISUALIZATION_FILE} from '@state/actions/projectEdition';
+import {
+    MODIFY_MODEL_FILE,
+    MODIFY_VIEW_FILE,
+    MODIFY_VISUALIZATION_FILE,
+    SANDBOX_AND_RUN
+} from '@state/actions/projectEdition';
 import {
     RepositoryDf,
     RepositoryFileDf,
@@ -14,6 +19,9 @@ export type ProjectEditionState = {
     currentTab: string;
     fetching: boolean;
     project: EditedProject;
+    running: boolean;
+    results: string;
+    error?: string;
 };
 
 const
@@ -68,7 +76,9 @@ const
                 head: generateInitial('VISUALIZATION'),
                 current: generateInitial('VISUALIZATION'),
             },
-        }
+        },
+        results: '',
+        running: false
     };
 
 const
@@ -114,9 +124,29 @@ const
                 current: modifyFileReducer(state.project.visualization.current, action)
             }
         }
+    }),
+
+    sandboxAndRunStartReducer = (state: ProjectEditionState, action): ProjectEditionState => ({
+        ...state,
+        error: '',
+        results: '',
+        running: true
+    }),
+
+    sandboxAndRunSuccessReducer = (state: ProjectEditionState, action): ProjectEditionState => ({
+        ...state,
+        error: '',
+        results: action.payload && action.payload.join('\n'),
+        running: false
+    }),
+
+    sandboxAndRunErrorReducer = (state: ProjectEditionState, action): ProjectEditionState => ({
+        ...state,
+        error: action.payload && action.payload.traceback,
+        running: false
     });
 
-export default function projectEditionReducer(state: ProjectEditionState, action: IAction<any>) {
+    export default function projectEditionReducer(state: ProjectEditionState, action: IAction<any>) {
     switch (action.type) {
         case MODIFY_VIEW_FILE.type:
             return modifyViewFileReducer(state, action);
@@ -126,6 +156,16 @@ export default function projectEditionReducer(state: ProjectEditionState, action
 
         case MODIFY_VISUALIZATION_FILE.type:
             return modifyVisualizationFileReducer(state, action);
+
+
+        case SANDBOX_AND_RUN.START.type:
+            return sandboxAndRunStartReducer(state, action);
+
+        case SANDBOX_AND_RUN.SUCCESS.type:
+            return sandboxAndRunSuccessReducer(state, action);
+
+        case SANDBOX_AND_RUN.ERROR.type:
+            return sandboxAndRunErrorReducer(state, action);
 
         default:
             return state || defaultState;

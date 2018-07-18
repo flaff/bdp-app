@@ -88,6 +88,8 @@
     border-top: 1px solid rgba(0, 0, 0, 0.1);
     pointer-events: none;
 
+    padding: 16px;
+
     transition: transform 500ms, opacity 500ms;
     transform: translateY(100%);
     opacity: 0;
@@ -97,5 +99,33 @@
       transform: translateY(0%);
       opacity: 1;
     }
+  }
+
+  .hideBottomDrawer {
+    text-align: right;
+    cursor: pointer;
+    padding: 10px;
+    margin: -10px -10px 0 -10px;
+  }
+
+  .toggleBottomDrawer {
+    padding: 0 10px;
+    cursor: pointer;
+  }
+
+  .errorDisplay {
+    background: #ffebee;
+    color: #b71c1c;
+    border-radius: 6px;
+    font-family: 'Inconsolata', sans-serif;
+    padding: 5px;
+  }
+
+  .resultsDisplay {
+    background: #efefef;
+    border-radius: 6px;
+    font-family: 'Inconsolata', sans-serif;
+    padding: 5px;
+    color: inherit;
   }
 }
