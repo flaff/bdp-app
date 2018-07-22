@@ -42,9 +42,9 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
                         <Column size={3} />
                         <Column size={3} />
                         <Column size={3}>
-                            <Link to={'/project/flaff/test'}>
+                            <Link to={'/project/flaff/example-temperature-analysis.project'}>
                             <Icon type="search" className={styles.primaryIcon} />
-                            <div className={styles.primaryName}>Debug project /flaff/test</div>
+                            <div className={styles.primaryName}>Debug project /flaff/example-temperature-analysis</div>
                             </Link>
                         </Column>
                     </Row>

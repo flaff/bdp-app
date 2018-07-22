@@ -1,6 +1,7 @@
 import {ipcRenderer} from 'electron';
 import {createRequestActions, createAction, IAction} from '@state/actions/helpers';
-import {ModifyFilePayload, RunnableProject} from '@state/types/projectEdition';
+import {LoadRepositoryPayload, ModifyFilePayload, RunnableProject, LoadProjectRepositorySuccessPayload} from '@state/types/projectEdition';
+import {RepositoryDf} from '@state/types/projectCreation';
 
 const
     electronDispatch = (action: IAction<any>) => ipcRenderer.send('ACTION', action) && null;
@@ -20,8 +21,30 @@ export const
         RUN_PYTHON: createRequestActions('SANDBOX_AND_RUN.RUN_PYTHON'),
     },
 
+    LOAD_REPOSITORY = {
+        PROJECT: createRequestActions<LoadProjectRepositorySuccessPayload>('LOAD_REPOSITORY.PROJECT'),
+        VIEW: createRequestActions<RepositoryDf>('LOAD_REPOSITORY.VIEW'),
+        MODEL: createRequestActions<RepositoryDf>('LOAD_REPOSITORY.MODEL'),
+        VISUALIZATION: createRequestActions<RepositoryDf>('LOAD_REPOSITORY.VISUALIZATION')
+    },
+
     modifyViewFile = (dispatch) => (p: ModifyFilePayload) => dispatch(MODIFY_VIEW_FILE(p)),
     modifyModelFile = (dispatch) => (p: ModifyFilePayload) => dispatch(MODIFY_MODEL_FILE(p)),
     modifyVisualizationFile = (dispatch) => (p: ModifyFilePayload) => dispatch(MODIFY_VISUALIZATION_FILE(p)),
 
-    sandboxAndRun = (dispatch) => (p: RunnableProject) => electronDispatch(SANDBOX_AND_RUN.REQUEST(p));
+    sandboxAndRun = (dispatch) => (p: RunnableProject) => electronDispatch(SANDBOX_AND_RUN.REQUEST(p)),
+
+    loadProjectRepository = (dispatch) => (p: LoadRepositoryPayload) =>
+        electronDispatch(LOAD_REPOSITORY.PROJECT.START(p as any)),
+
+    loadViewRepository = (dispatch) => (p: LoadRepositoryPayload) =>
+        electronDispatch(LOAD_REPOSITORY.VIEW.START(p as any)),
+
+    loadModelRepository = (dispatch) => (p: LoadRepositoryPayload) =>
+        electronDispatch(LOAD_REPOSITORY.MODEL.START(p as any)),
+
+    loadVisualizationRepository = (dispatch) => (p: LoadRepositoryPayload) =>
+        electronDispatch(LOAD_REPOSITORY.VISUALIZATION.START(p as any));
+
+
+

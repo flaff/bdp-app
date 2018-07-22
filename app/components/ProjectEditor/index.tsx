@@ -12,7 +12,8 @@ import {RepositoryType} from '@state/types/projectCreation';
 import {SelectParam} from 'antd/es/menu';
 import {
     modifyModelFile,
-    modifyViewFile, modifyVisualizationFile, sandboxAndRun
+    modifyViewFile, modifyVisualizationFile, sandboxAndRun,
+    loadModelRepository, loadProjectRepository, loadViewRepository, loadVisualizationRepository
 } from '@state/actions/projectEdition';
 import Markdown from '@components/Markdown';
 
@@ -30,6 +31,7 @@ type EditorState = {
 
 type RepositoryMenuProps = {
     repoType: string;
+    repoFetching: boolean;
     repoName: string;
 };
 
@@ -43,20 +45,20 @@ const
     fileTypeToIcon = (fileType: string) => {
         switch (fileType) {
             case 'python':
-                return (<FontAwesome name={'python'} />);
+                return (<FontAwesome name={'python'}/>);
             case 'markdown':
-                return <MarkdownIcon />;
+                return <MarkdownIcon/>;
             default:
-                return (<div />);
+                return (<div/>);
         }
     },
 
     capitalizeFirst = (string: string) => string[0].toUpperCase() + string.substr(1).toLowerCase(),
 
-    RepositoryMenu = (props: RepositoryMenuProps) => (
+    RepositoryMenu = (props: RepositoryMenuProps) => !(props.repoFetching) ? (
         <Menu.SubMenu key={props.repoType} title={<div>
             <div>{capitalizeFirst(props.repoType)}</div>
-            <div className={styles.secondary}>{props.repoName}</div>
+            <div className={styles.secondary} title={props.repoName}>{props.repoName}</div>
         </div>}>
             <Menu.Item key={`${props.repoType}/${props.repoType}.py`}>
                 <div>Source</div>
@@ -66,10 +68,19 @@ const
                 <div>Description</div>
                 <div className={styles.secondary}>README.md</div>
             </Menu.Item>
-            <Menu.Item key={`${props.repoType}/short-desc.txt`}>
+            <Menu.Item key={`${props.repoType}/short_desc.txt`}>
                 <div>Short description</div>
-                <div className={styles.secondary}>short-desc.txt</div>
+                <div className={styles.secondary}>short_desc.txt</div>
             </Menu.Item>
+        </Menu.SubMenu>
+    ) : (
+        <Menu.SubMenu key={props.repoType} title={<div>
+            <div>{capitalizeFirst(props.repoType)}</div>
+            <div className={styles.secondary}>Loading {props.repoType}...</div>
+        </div>}>
+            <div className={'ta-c'}>
+                <Icon type="loading" />
+            </div>
         </Menu.SubMenu>
     );
 
@@ -94,6 +105,36 @@ class ProjectEditor extends React.Component<EditorProps, EditorState> {
         this.toggleDrawer = this.toggleDrawer.bind(this);
         this.setDrawerVisibility = this.setDrawerVisibility.bind(this);
         this.parseTextOutput = this.parseTextOutput.bind(this);
+        this.getCurrentFileContent = this.getCurrentFileContent.bind(this);
+        this.getMarkdownContent = this.getMarkdownContent.bind(this);
+    }
+
+    static getDerivedStateFromProps(props: EditorProps, state: EditorState) {
+        if (!props.projectFetched && !props.projectFetching) {
+            props.loadProjectRepository({
+                name: props.projectAuthor + '/' + props.projectName
+            });
+        }
+
+        if (!props.viewFetched && !props.viewFetching && props.view.name) {
+            props.loadModelRepository({
+                name: props.view.name
+            });
+        // }
+        //
+        // if (!props.modelFetched && !props.modelFetching && props.model.name) {
+            props.loadModelRepository({
+                name: props.model.name
+            });
+        // }
+        //
+        // if (!props.visualizationFetched && !props.visualizationFetching && props.visualization.name) {
+            props.loadVisualizationRepository({
+                name: props.visualization.name
+            });
+        }
+
+        return state;
     }
 
     renderEditors() {
@@ -154,16 +195,20 @@ class ProjectEditor extends React.Component<EditorProps, EditorState> {
         }
     }
 
-    getCurrentFileContent() {
+    getCurrentRepoModel() {
         switch (this.state.currentRepo) {
             default:
             case 'view':
-                return this.props.view.files[this.state.currentFile].content;
+                return this.props.view;
             case 'model':
-                return this.props.model.files[this.state.currentFile].content;
+                return this.props.model;
             case 'visualization':
-                return this.props.visualization.files[this.state.currentFile].content;
+                return this.props.visualization;
         }
+    }
+
+    getCurrentFileContent() {
+        return this.getCurrentRepoModel().files[this.state.currentFile].content;
     }
 
     renderEditor() {
@@ -202,6 +247,16 @@ class ProjectEditor extends React.Component<EditorProps, EditorState> {
         });
     }
 
+    getMarkdownContent() {
+        return this.getCurrentFileContent()
+            .replace(/%TITLE%/g, this.getCurrentRepoModel().name || 'title')
+            .replace(/%TYPE%/g, this.getCurrentRepoModel().type.toLowerCase())
+            .replace(/%AUTHOR%/g, this.getCurrentRepoModel().author.toLowerCase())
+            .replace(/%SHORT_DESCRIPTION%/g,
+                this.getCurrentRepoModel().files['short_desc.txt'].content ||
+                'No short description provided');
+    }
+
     render() {
         return (
             <div className={'fullHeight flexVertical'}>
@@ -210,20 +265,22 @@ class ProjectEditor extends React.Component<EditorProps, EditorState> {
                         {this.props.projectName} <span className={styles.repositoryType}>.project</span>
                     </div>
                     <div className={styles.topBarIcons}>
-                        {!this.props.running && <div className={styles.topBarIcon} style={{color: 'var(--green)'}} onClick={this.onRunClick}>
-                            <Icon type="caret-right" /> Run
+                        {!this.props.running &&
+                        <div className={styles.topBarIcon} style={{color: 'var(--green)'}} onClick={this.onRunClick}>
+                            <Icon type="caret-right"/> Run
                         </div>}
-                        {this.props.running && <div className={styles.topBarIcon} style={{color: 'var(--red)'}} onClick={this.onRunClick}>
-                            <Icon type="loading" /> Stop
+                        {this.props.running &&
+                        <div className={styles.topBarIcon} style={{color: 'var(--red)'}} onClick={this.onRunClick}>
+                            <Icon type="loading"/> Stop
                         </div>}
                         <div className={styles.topBarIcon}>
-                            <Icon type="arrow-up" /> Publish
+                            <Icon type="arrow-up"/> Publish
                         </div>
                         <div className={styles.topBarIcon}>
-                            <Icon type="rollback" /> Revert
+                            <Icon type="rollback"/> Revert
                         </div>
                     </div>
-                    <div className={'avatarPlaceholder'} />
+                    <div className={'avatarPlaceholder'}/>
                 </div>
                 <ContainerFluid className={'flexGrow flexVertical'}>
                     <Row className={'flexGrow'}>
@@ -231,9 +288,9 @@ class ProjectEditor extends React.Component<EditorProps, EditorState> {
                             <Menu className={classNames(styles.repositoryTabs, 'fullHeight')} mode={'inline'}
                                   defaultSelectedKeys={[`${this.state.currentRepo}/${this.state.currentFile}`]}
                                   defaultOpenKeys={['view', 'model', 'visualization']} onSelect={this.onRepoTabClick}>
-                                {RepositoryMenu({repoName: this.props.viewName, repoType: 'view'})}
-                                {RepositoryMenu({repoName: this.props.modelName, repoType: 'model'})}
-                                {RepositoryMenu({repoName: this.props.visualizationName, repoType: 'visualization'})}
+                                {RepositoryMenu({repoName: this.props.view.name, repoType: 'view', repoFetching: this.props.viewFetching})}
+                                {RepositoryMenu({repoName: this.props.model.name, repoType: 'model', repoFetching: this.props.modelFetching})}
+                                {RepositoryMenu({repoName: this.props.visualization.name, repoType: 'visualization', repoFetching: this.props.visualizationFetching})}
                             </Menu>
                             <div>
 
@@ -243,7 +300,7 @@ class ProjectEditor extends React.Component<EditorProps, EditorState> {
                             {this.renderEditor()}
                         </Column>
                         {this.state.currentFileType === 'markdown' && <Column size={4}>
-                            <Markdown source={this.getCurrentFileContent()}/>
+                            <Markdown source={this.getMarkdownContent()}/>
                         </Column>}
                     </Row>
                 </ContainerFluid>
@@ -253,7 +310,7 @@ class ProjectEditor extends React.Component<EditorProps, EditorState> {
                     </div>
                     <div className={'flex'}>
                         <div className={styles.toggleBottomDrawer} onClick={this.toggleDrawer}>
-                            <Icon type={this.state.bottomDrawerOpen ? 'down' : 'up'} /> Results
+                            <Icon type={this.state.bottomDrawerOpen ? 'down' : 'up'}/> Results
                         </div>
                         {!this.props.running && !this.props.error && (
                             <div style={{color: 'var(--green)'}}>Ready <Icon type="check-circle"/></div>
@@ -267,14 +324,14 @@ class ProjectEditor extends React.Component<EditorProps, EditorState> {
                     </div>
                 </div>
                 <div className={classNames(styles.bottomDrawer, {[styles.open]: this.state.bottomDrawerOpen})}>
-                    <div className={styles.hideBottomDrawer} onClick={this.toggleDrawer}><Icon type="down" /> Hide</div>
+                    <div className={styles.hideBottomDrawer} onClick={this.toggleDrawer}><Icon type="down"/> Hide</div>
                     {this.props.error && (
-                        <div className={styles.errorDisplay}>
-                            {this.props.error}
-                        </div>
+                        <div className={styles.errorDisplay}
+                             dangerouslySetInnerHTML={this.parseTextOutput(this.props.errorMessage)}/>
                     )}
                     {this.props.results && (
-                        <div className={styles.resultsDisplay} dangerouslySetInnerHTML={this.parseTextOutput(this.props.results)} />
+                        <div className={styles.resultsDisplay}
+                             dangerouslySetInnerHTML={this.parseTextOutput(this.props.results)}/>
                     )}
                 </div>
             </div>
@@ -286,21 +343,26 @@ const
     stateToProps = (state: StoreState, passedProps: EditorPassedProps) => ({
         projectAuthor: state.routing.location && state.routing.location.pathname.toString().split('/')[2],
         projectName: state.routing.location && state.routing.location.pathname.toString().split('/')[3],
-        viewName: 'flaff/test.view',
+        projectFetched: state.projectEdition.project.fetched,
+        projectFetching: state.projectEdition.project.fetching,
 
         view: state.projectEdition.project.view.current,
         viewHead: state.projectEdition.project.view.head,
+        viewFetched: state.projectEdition.project.view.fetched,
+        viewFetching: state.projectEdition.project.view.fetching,
 
         model: state.projectEdition.project.model.current,
         modelHead: state.projectEdition.project.model.head,
+        modelFetched: state.projectEdition.project.model.fetched,
+        modelFetching: state.projectEdition.project.model.fetching,
 
         visualization: state.projectEdition.project.visualization.current,
         visualizationHead: state.projectEdition.project.visualization.head,
-
-        modelName: 'flaff/test.model',
-        visualizationName: 'flaff/test.visualization',
+        visualizationFetched: state.projectEdition.project.visualization.fetched,
+        visualizationFetching: state.projectEdition.project.visualization.fetching,
 
         error: state.projectEdition.error,
+        errorMessage: state.projectEdition.errorMessage,
         results: state.projectEdition.results,
         running: state.projectEdition.running
     }),
@@ -309,7 +371,12 @@ const
         modifyViewFile: modifyViewFile(dispatch),
         modifyModelFile: modifyModelFile(dispatch),
         modifyVisualizationFile: modifyVisualizationFile(dispatch),
-        sandboxAndRun: sandboxAndRun(dispatch)
+        sandboxAndRun: sandboxAndRun(dispatch),
+
+        loadProjectRepository: loadProjectRepository(dispatch),
+        loadViewRepository: loadViewRepository(dispatch),
+        loadModelRepository: loadModelRepository(dispatch),
+        loadVisualizationRepository: loadVisualizationRepository(dispatch),
     });
 
 export default connect(stateToProps, dispatchToProps)(ProjectEditor);

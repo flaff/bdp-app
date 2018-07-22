@@ -19,6 +19,7 @@ export type RepositoryFilesDf = {[fileName: string]: RepositoryFileDf};
 
 export type RepositoryDf = {
     address: string;
+    author: string;
     name: string;
     type: RepositoryType;
     files: RepositoryFilesDf;

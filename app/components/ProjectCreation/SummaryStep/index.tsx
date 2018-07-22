@@ -92,6 +92,7 @@ class SummaryStep extends React.Component<SummaryStepProps, SummaryStepState> {
                 type,
                 address: 'http://localhost:7617',
                 name: `${this.props.userName}/${result.title}.${type.toLowerCase()}`,
+                author: this.props.userName,
                 files: {
                     ['README.md']: {
                         name: 'README.md',
@@ -104,9 +105,9 @@ class SummaryStep extends React.Component<SummaryStepProps, SummaryStepState> {
                     [`${type.toLowerCase()}.json`]: {
                         name: `${type.toLowerCase()}.json`,
                         content: JSON.stringify({
-                            view: `${this.props.userName}/${this.props.viewResult.title}-view`,
-                            model: `${this.props.userName}/${this.props.modelResult.title}-model`,
-                            visualization: `${this.props.userName}/${this.props.visualizationResult.title}-visualization`
+                            viewName: `${this.props.userName}/${this.props.viewResult.title}.view`,
+                            modelName: `${this.props.userName}/${this.props.modelResult.title}.model`,
+                            visualizationName: `${this.props.userName}/${this.props.visualizationResult.title}.visualization`
                         })
                     }
                 }
@@ -124,6 +125,7 @@ class SummaryStep extends React.Component<SummaryStepProps, SummaryStepState> {
                 type,
                 address: 'http://localhost:7617',
                 name: `${this.props.userName}/${result.title}.${type.toLowerCase()}`,
+                author: this.props.userName,
                 files: {
                     ['README.md']: {
                         name: 'README.md',
@@ -143,8 +145,7 @@ class SummaryStep extends React.Component<SummaryStepProps, SummaryStepState> {
     }
 
     isPublished() {
-        return this.state.publishing
-            && this.props.projectTimeline.finishedSteps.length >= 7
+        return this.props.projectTimeline.finishedSteps.length >= 7
             && this.props.viewTimeline.finishedSteps.length >= 7
             && this.props.modelTimeline.finishedSteps.length >= 7
             && this.props.visualizationTimeline.finishedSteps.length >= 7;
@@ -197,7 +198,7 @@ class SummaryStep extends React.Component<SummaryStepProps, SummaryStepState> {
                 <Column size={1}/>
                 <Column size={12} className={'ta-c'}>
                     {this.isPublished() &&
-                        <Link to={`project/${this.props.projectResult.title}`}>
+                        <Link to={`project/${this.props.userName}/${this.props.projectResult.title}.project`}>
                             <Button size={'large'}>Continue</Button>
                         </Link>}
                 </Column>

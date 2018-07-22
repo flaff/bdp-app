@@ -58,6 +58,9 @@
   .secondary {
     font-size: 80%;
     opacity: 0.8;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .repositoryTabs {

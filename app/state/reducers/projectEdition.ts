@@ -1,5 +1,6 @@
 import {IAction} from '@state/actions';
 import {
+    LOAD_REPOSITORY,
     MODIFY_MODEL_FILE,
     MODIFY_VIEW_FILE,
     MODIFY_VISUALIZATION_FILE,
@@ -13,22 +14,23 @@ import {
     StepTimeline
 } from '@state/types/projectCreation';
 
-import {EditedProject, ModifyFilePayload} from '@state/types/projectEdition';
+import {EditedProject, LoadProjectRepositorySuccessPayload, ModifyFilePayload} from '@state/types/projectEdition';
 
 export type ProjectEditionState = {
     currentTab: string;
-    fetching: boolean;
     project: EditedProject;
     running: boolean;
     results: string;
-    error?: string;
+    errorMessage: string;
+    error: boolean;
 };
 
 const
-    generateInitial = (type: RepositoryType) => ({
-        name: `Fetching ${type.toLowerCase()}...`,
+    generateInitial = (type: RepositoryType): RepositoryDf => ({
+        name: '',
         type: type,
         address: 'http://localhost:7617',
+        author: '',
         files: {
             ['README.md']: {
                 name: 'README.md',
@@ -38,8 +40,8 @@ const
                 name: `${type.toLowerCase()}.py`,
                 content: ''
             },
-            ['short-desc.txt']: {
-                name: 'short-desc.txt',
+            ['short_desc.txt']: {
+                name: 'short_desc.txt',
                 content: ''
             },
         }
@@ -62,23 +64,34 @@ const
 
     defaultState: ProjectEditionState = {
         currentTab: '',
-        fetching: true,
         project: {
+            fetching: false,
+            fetched: false,
+            files: {},
+
             model: {
                 head: generateInitial('MODEL'),
                 current: generateInitial('MODEL'),
+                fetched: false,
+                fetching: false
             },
             view: {
                 head: generateInitial('VIEW'),
                 current: generateInitial('VIEW'),
+                fetched: false,
+                fetching: false
             },
             visualization: {
                 head: generateInitial('VISUALIZATION'),
                 current: generateInitial('VISUALIZATION'),
+                fetched: false,
+                fetching: false
             },
         },
         results: '',
-        running: false
+        running: false,
+        error: false,
+        errorMessage: ''
     };
 
 const
@@ -128,23 +141,149 @@ const
 
     sandboxAndRunStartReducer = (state: ProjectEditionState, action): ProjectEditionState => ({
         ...state,
-        error: '',
+        error: false,
+        errorMessage: '',
         results: '',
         running: true
     }),
 
     sandboxAndRunSuccessReducer = (state: ProjectEditionState, action): ProjectEditionState => ({
         ...state,
-        error: '',
+        error: false,
+        errorMessage: '',
         results: action.payload && action.payload.join('\n'),
         running: false
     }),
 
     sandboxAndRunErrorReducer = (state: ProjectEditionState, action): ProjectEditionState => ({
         ...state,
-        error: action.payload && action.payload.traceback,
+        error: true,
         running: false
-    });
+    }),
+
+
+
+    sandboxAndRunPythonErrorReducer = (state: ProjectEditionState, action): ProjectEditionState => ({
+        ...state,
+        errorMessage: action.payload,
+        error: true,
+        running: false
+    }),
+
+    loadRepositoryReducer = (repo: RepositoryDf, action: IAction<RepositoryFilesDf>): RepositoryDf => ({
+        ...repo,
+        files: cloneFiles(action.payload)
+    }),
+
+    loadViewStartReducer = (state: ProjectEditionState, action): ProjectEditionState => ({
+        ...state,
+        project: {
+            ...state.project,
+            view: {
+                ...state.project.view,
+                fetched: false,
+                fetching: true
+            }
+        }
+    }),
+
+    loadModelStartReducer = (state: ProjectEditionState, action): ProjectEditionState => ({
+        ...state,
+        project: {
+            ...state.project,
+            model: {
+                ...state.project.model,
+                fetched: false,
+                fetching: true
+            }
+        }
+    }),
+
+    loadVisualizationStartReducer = (state: ProjectEditionState, action): ProjectEditionState => ({
+        ...state,
+        project: {
+            ...state.project,
+            visualization: {
+                ...state.project.visualization,
+                fetched: false,
+                fetching: true
+            }
+        }
+    }),
+
+    loadViewSuccessReducer = (state: ProjectEditionState, action): ProjectEditionState => ({
+        ...state,
+        project: {
+            ...state.project,
+            view: {
+                fetched: true,
+                fetching: false,
+                current: loadRepositoryReducer(state.project.view.current, action),
+                head: loadRepositoryReducer(state.project.view.head, action)
+            }
+        }
+    }),
+
+    loadModelSuccessReducer = (state: ProjectEditionState, action): ProjectEditionState => ({
+        ...state,
+        project: {
+            ...state.project,
+            model: {
+                fetched: true,
+                fetching: false,
+                current: loadRepositoryReducer(state.project.model.current, action),
+                head: loadRepositoryReducer(state.project.model.head, action)
+            }
+        }
+    }),
+
+    loadVisualizationSuccessReducer = (state: ProjectEditionState, action): ProjectEditionState => ({
+        ...state,
+        project: {
+            ...state.project,
+            visualization: {
+                fetched: true,
+                fetching: false,
+                current: loadRepositoryReducer(state.project.visualization.current, action),
+                head: loadRepositoryReducer(state.project.visualization.head, action)
+            }
+        }
+    }),
+
+    loadProjectStartReducer = (state: ProjectEditionState, action): ProjectEditionState => ({
+        ...state,
+        project: {
+            ...state.project,
+            fetched: false,
+            fetching: true
+        }
+    }),
+
+    loadProjectSuccessReducer = (state: ProjectEditionState, action: IAction<RepositoryFilesDf>): ProjectEditionState => {
+        const {viewName, modelName, visualizationName} = JSON.parse(action.payload['project.json'].content);
+
+        return {
+            ...state,
+            project: {
+                ...state.project,
+                view: {
+                    ...state.project.view,
+                    current: {...state.project.view.current, name: viewName},
+                    head: {...state.project.view.head, name: viewName}
+                },
+                model: {
+                    ...state.project.model,
+                    current: {...state.project.model.current, name: modelName},
+                    head: {...state.project.model.head, name: modelName}
+                },
+                visualization: {
+                    ...state.project.visualization,
+                    current: {...state.project.visualization.current, name: visualizationName},
+                    head: {...state.project.visualization.head, name: visualizationName}
+                }
+            }
+        };
+    };
 
     export default function projectEditionReducer(state: ProjectEditionState, action: IAction<any>) {
     switch (action.type) {
@@ -166,6 +305,35 @@ const
 
         case SANDBOX_AND_RUN.ERROR.type:
             return sandboxAndRunErrorReducer(state, action);
+
+        case SANDBOX_AND_RUN.RUN_PYTHON.ERROR.type:
+            return sandboxAndRunPythonErrorReducer(state, action);
+
+
+        case LOAD_REPOSITORY.PROJECT.START.type:
+            return loadProjectStartReducer(state, action);
+
+        case LOAD_REPOSITORY.VIEW.START.type:
+            return loadViewStartReducer(state, action);
+
+        case LOAD_REPOSITORY.MODEL.START.type:
+            return loadModelStartReducer(state, action);
+
+        case LOAD_REPOSITORY.VISUALIZATION.START.type:
+            return loadVisualizationStartReducer(state, action);
+
+
+        case LOAD_REPOSITORY.PROJECT.SUCCESS.type:
+            return loadProjectSuccessReducer(state, action);
+
+        case LOAD_REPOSITORY.VIEW.SUCCESS.type:
+            return loadViewSuccessReducer(state, action);
+
+        case LOAD_REPOSITORY.MODEL.SUCCESS.type:
+            return loadModelSuccessReducer(state, action);
+
+        case LOAD_REPOSITORY.VISUALIZATION.SUCCESS.type:
+            return loadVisualizationSuccessReducer(state, action);
 
         default:
             return state || defaultState;

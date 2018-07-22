@@ -58,6 +58,12 @@ class User extends React.Component<UserBarProps, UserBarState> {
                 <Link to={'/'} onClick={this.props.logoutUser}>
                     Logout
                 </Link>
+
+                <div />
+
+                <Link to={'/'} onClick={this.toggleDrawer}>
+                    <Icon type="home" /> Dashboard
+                </Link>
             </div>
         )
     }
