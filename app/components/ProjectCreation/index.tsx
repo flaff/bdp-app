@@ -22,13 +22,13 @@ const
     emptyProjectState: ProjectStepResult = {
         title: '',
         shortDescription: '',
-        detailedDescription: '### %TITLE% `.%TYPE%`\n%SHORT_DESCRIPTION%\n\n#### Detailed description\n'
+        detailedDescription: '### %TITLE% `.%TYPE%`\nby %AUTHOR%\n\n%SHORT_DESCRIPTION%\n\n#### Detailed description\n'
     },
 
     emptyGenericStepState: GenericStepResult = {
         title: '',
         shortDescription: '',
-        detailedDescription: '### %TITLE% `.%TYPE%`\n%SHORT_DESCRIPTION%\n\n#### Detailed description\n',
+        detailedDescription: '### %TITLE% `.%TYPE%`\nby %AUTHOR%\n%SHORT_DESCRIPTION%\n\n#### Detailed description\n',
         existingViewSource: '',
         useExistingView: false
     };

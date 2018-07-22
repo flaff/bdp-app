@@ -55,6 +55,18 @@ const
 
     capitalizeFirst = (string: string) => string[0].toUpperCase() + string.substr(1).toLowerCase(),
 
+    withoutType = (name: string) => {
+        return name.split('.')[0];
+    },
+
+    withoutAuthor = (name: string) => {
+        return name.split('/')[1];
+    },
+
+    getAuthorFromName = (name: string) => {
+        return name.split('/')[0];
+    },
+
     RepositoryMenu = (props: RepositoryMenuProps) => !(props.repoFetching) ? (
         <Menu.SubMenu key={props.repoType} title={<div>
             <div>{capitalizeFirst(props.repoType)}</div>
@@ -249,9 +261,9 @@ class ProjectEditor extends React.Component<EditorProps, EditorState> {
 
     getMarkdownContent() {
         return this.getCurrentFileContent()
-            .replace(/%TITLE%/g, this.getCurrentRepoModel().name || 'title')
+            .replace(/%TITLE%/g, withoutAuthor(withoutType(this.getCurrentRepoModel().name)) || 'title')
             .replace(/%TYPE%/g, this.getCurrentRepoModel().type.toLowerCase())
-            .replace(/%AUTHOR%/g, this.getCurrentRepoModel().author.toLowerCase())
+            .replace(/%AUTHOR%/g, getAuthorFromName(this.getCurrentRepoModel().name))
             .replace(/%SHORT_DESCRIPTION%/g,
                 this.getCurrentRepoModel().files['short_desc.txt'].content ||
                 'No short description provided');
@@ -262,7 +274,7 @@ class ProjectEditor extends React.Component<EditorProps, EditorState> {
             <div className={'fullHeight flexVertical'}>
                 <div className={styles.topBar}>
                     <div className={styles.projectName}>
-                        {this.props.projectName} <span className={styles.repositoryType}>.project</span>
+                        {this.props.projectName && withoutType(this.props.projectName)} <span className={styles.repositoryType}>.project</span>
                     </div>
                     <div className={styles.topBarIcons}>
                         {!this.props.running &&

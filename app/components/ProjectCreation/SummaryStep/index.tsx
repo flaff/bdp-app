@@ -137,7 +137,7 @@ class SummaryStep extends React.Component<SummaryStepProps, SummaryStepState> {
                     },
                     [`${type.toLowerCase()}.py`]: {
                         name: `${type.toLowerCase()}.py`,
-                        content: `# ${type.toLowerCase()} created ${moment().format('HH:mm DD.MM.YYYY')}\n\n`
+                        content: `# ${type.toLowerCase()} created ${moment().format('HH:mm DD.MM.YYYY')} by ${this.props.userName}\n\n`
                     }
                 }
             }
