@@ -28,9 +28,9 @@ export const
         VISUALIZATION: createRequestActions<RepositoryDf>('LOAD_REPOSITORY.VISUALIZATION')
     },
 
-    modifyViewFile = (dispatch) => (p: ModifyFilePayload) => dispatch(MODIFY_VIEW_FILE(p)),
-    modifyModelFile = (dispatch) => (p: ModifyFilePayload) => dispatch(MODIFY_MODEL_FILE(p)),
-    modifyVisualizationFile = (dispatch) => (p: ModifyFilePayload) => dispatch(MODIFY_VISUALIZATION_FILE(p)),
+    modifyViewFile = (dispatch) => (p: ModifyFilePayload) => dispatch(MODIFY_VIEW_FILE(p)) || electronDispatch(MODIFY_VIEW_FILE(p)),
+    modifyModelFile = (dispatch) => (p: ModifyFilePayload) => dispatch(MODIFY_MODEL_FILE(p)) || electronDispatch(MODIFY_MODEL_FILE(p)),
+    modifyVisualizationFile = (dispatch) => (p: ModifyFilePayload) => dispatch(MODIFY_VISUALIZATION_FILE(p)) || electronDispatch(MODIFY_VISUALIZATION_FILE(p)),
 
     sandboxAndRun = (dispatch) => (p: RunnableProject) => electronDispatch(SANDBOX_AND_RUN.REQUEST(p)),
 

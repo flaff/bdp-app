@@ -157,6 +157,9 @@ const
 
     sandboxAndRunErrorReducer = (state: ProjectEditionState, action): ProjectEditionState => ({
         ...state,
+        errorMessage: (action.payload && action.payload.traceback && state.errorMessage.indexOf(action.payload.traceback) === -1)
+            ? (state.errorMessage + '\n\n' + action.payload.traceback)
+            : state.errorMessage,
         error: true,
         running: false
     }),

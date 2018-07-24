@@ -16,6 +16,7 @@ import {
     loadModelRepository, loadProjectRepository, loadViewRepository, loadVisualizationRepository
 } from '@state/actions/projectEdition';
 import Markdown from '@components/Markdown';
+import {ModifyFilePayload} from '@state/types/projectEdition';
 
 const styles = require('./styles.scss');
 
@@ -27,6 +28,7 @@ type EditorState = {
     currentFile: string;
     currentFileType: string;
     bottomDrawerOpen: boolean;
+    showDiff: boolean;
 };
 
 type RepositoryMenuProps = {
@@ -104,7 +106,8 @@ class ProjectEditor extends React.Component<EditorProps, EditorState> {
             currentFile: 'view.py',
             currentRepo: 'view',
             currentFileType: 'python',
-            bottomDrawerOpen: false
+            bottomDrawerOpen: false,
+            showDiff: false
         };
 
         this.onRepoTabClick = this.onRepoTabClick.bind(this);
@@ -118,7 +121,9 @@ class ProjectEditor extends React.Component<EditorProps, EditorState> {
         this.setDrawerVisibility = this.setDrawerVisibility.bind(this);
         this.parseTextOutput = this.parseTextOutput.bind(this);
         this.getCurrentFileContent = this.getCurrentFileContent.bind(this);
+        this.getCurrentFileHeadContent = this.getCurrentFileHeadContent.bind(this);
         this.getMarkdownContent = this.getMarkdownContent.bind(this);
+        this.onDiffClick = this.onDiffClick.bind(this);
     }
 
     static getDerivedStateFromProps(props: EditorProps, state: EditorState) {
@@ -191,7 +196,8 @@ class ProjectEditor extends React.Component<EditorProps, EditorState> {
     }
 
     modifyCurrentFileContent(content: string) {
-        const file = {
+        const file: ModifyFilePayload = {
+            repository: this.getCurrentRepoModel().name,
             name: this.state.currentFile,
             content
         };
@@ -204,6 +210,18 @@ class ProjectEditor extends React.Component<EditorProps, EditorState> {
                 return this.props.modifyModelFile(file);
             case 'visualization':
                 return this.props.modifyVisualizationFile(file);
+        }
+    }
+
+    getCurrentRepoHeadModel() {
+        switch (this.state.currentRepo) {
+            default:
+            case 'view':
+                return this.props.viewHead;
+            case 'model':
+                return this.props.modelHead;
+            case 'visualization':
+                return this.props.visualizationHead;
         }
     }
 
@@ -223,9 +241,15 @@ class ProjectEditor extends React.Component<EditorProps, EditorState> {
         return this.getCurrentRepoModel().files[this.state.currentFile].content;
     }
 
+    getCurrentFileHeadContent() {
+        return this.getCurrentRepoHeadModel().files[this.state.currentFile].content;
+    }
+
     renderEditor() {
         return (
-            <CodeEditor value={this.getCurrentFileContent()} language={this.state.currentFileType}
+            <CodeEditor value={this.getCurrentFileContent()}
+                        diffValue={this.state.showDiff ? this.getCurrentFileHeadContent() : undefined}
+                        language={this.state.currentFileType}
                         onChange={this.onEditorChange}/>
         )
     }
@@ -259,6 +283,13 @@ class ProjectEditor extends React.Component<EditorProps, EditorState> {
         });
     }
 
+    onDiffClick() {
+        this.setState({
+            ...this.state,
+            showDiff: !this.state.showDiff
+        });
+    }
+
     getMarkdownContent() {
         return this.getCurrentFileContent()
             .replace(/%TITLE%/g, withoutAuthor(withoutType(this.getCurrentRepoModel().name)) || 'title')
@@ -285,6 +316,10 @@ class ProjectEditor extends React.Component<EditorProps, EditorState> {
                         <div className={styles.topBarIcon} style={{color: 'var(--red)'}} onClick={this.onRunClick}>
                             <Icon type="loading"/> Stop
                         </div>}
+                        <div className={styles.topBarIcon} style={{color: this.state.showDiff ? 'var(--blue)' : 'inherit'}}
+                            onClick={this.onDiffClick}>
+                            <Icon type="swap"/> Diff
+                        </div>
                         <div className={styles.topBarIcon}>
                             <Icon type="arrow-up"/> Publish
                         </div>

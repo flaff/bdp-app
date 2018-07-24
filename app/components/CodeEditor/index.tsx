@@ -8,6 +8,7 @@ interface CodeEditorProps {
     language?: string;
     height?: string;
     wordWrap?: boolean;
+    diffValue?: string;
 }
 
 const
@@ -39,7 +40,20 @@ export default class CodeEditor extends React.Component<CodeEditorProps> {
 
     render() {
         const props = this.props;
-        return (
+        return props.diffValue ? (
+            <MonacoDiffEditor
+                value={props.value}
+                original={props.diffValue}
+                onChange={props.onChange}
+                theme={'xcode'}
+                language={props.language}
+                editorDidMount={this.onEditorDidMount}
+                options={{
+                    ...defaultEditorOptions,
+                    wordWrap: this.props.wordWrap
+                }}
+            />
+            ) : (
             <MonacoEditor
                 value={props.value}
                 onChange={props.onChange}

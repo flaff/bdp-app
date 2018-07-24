@@ -43,6 +43,7 @@ export type EditedProject = {
 };
 
 export type ModifyFilePayload = {
+    repository: string;
     name: string;
     content: string;
 };
