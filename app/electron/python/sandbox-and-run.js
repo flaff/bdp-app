@@ -59,7 +59,7 @@ const
             })
             .then(() => {
                 emit('SANDBOX_AND_RUN.RUN_PYTHON_START');
-                return pythonRunFileAsync(sandboxPath, 'view.py')
+                return pythonRunFileAsync(sandboxPath, 'visualization.py')
                     .then(emitProxy('SANDBOX_AND_RUN.RUN_PYTHON_SUCCESS'))
                     .catch(emitProxyError('SANDBOX_AND_RUN.RUN_PYTHON_ERROR'));
             })

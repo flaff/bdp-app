@@ -267,8 +267,9 @@ class ProjectEditor extends React.Component<EditorProps, EditorState> {
 
     parseTextOutput(text: string) {
         return {
-            __html: text
+            __html: (text + '\n')
                 .replace(/(\r\n)/g, '\n')
+                .replace(/___FIGURE_BASE64___(.*)___FIGURE_BASE64___/g, '<img src="data:image/png;base64,$1">')
                 .replace(/(\n)/g, '<br>')
         }
     }
