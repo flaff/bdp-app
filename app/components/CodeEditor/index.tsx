@@ -2,6 +2,12 @@ import * as React from 'react';
 import MonacoResizer from './MonacoResizer';
 import MonacoEditor, {MonacoDiffEditor} from 'react-monaco-editor';
 
+if (process.env.NODE_ENV === 'production') {
+    const monaco = require('monaco-editor');
+    (window as any).monaco = monaco;
+}
+
+
 interface CodeEditorProps {
     value?: string;
     onChange?(val: string, ev: any): void;
@@ -12,6 +18,10 @@ interface CodeEditorProps {
 }
 
 const
+    requireConfig = {
+        // url: './vs/loader.js'
+    },
+
     defaultEditorOptions = {
         autoIndent: true,
         fontFamily: 'Inconsolata'
@@ -52,6 +62,7 @@ export default class CodeEditor extends React.Component<CodeEditorProps> {
                     ...defaultEditorOptions,
                     wordWrap: this.props.wordWrap
                 }}
+                requireConfig={requireConfig}
             />
             ) : (
             <MonacoEditor
@@ -64,6 +75,7 @@ export default class CodeEditor extends React.Component<CodeEditorProps> {
                     ...defaultEditorOptions,
                     wordWrap: this.props.wordWrap
                 }}
+                requireConfig={requireConfig}
             />
         )
     }

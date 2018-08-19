@@ -1,6 +1,7 @@
 /**
  * Base webpack config used across other specific configs
  */
+// const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
@@ -19,7 +20,7 @@ module.exports = {
       test: /\.json$/,
       loader: 'json-loader'
     },
-        // { test: /\.node$/, loader: 'node-loader' }
+        // { test: /\.css$/, use: ['style-loader', 'css-loader'] }
     ]
   },
 
@@ -56,5 +57,6 @@ module.exports = {
 
   externals: Object.keys(externals || {
       nodegit: 'commonjs nodegit'
+      // 'monaco-editor': 'commonjs monaco-editor'
   })
 };

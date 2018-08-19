@@ -5,6 +5,7 @@
  */
 
 const webpack = require('webpack');
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 const merge = require('webpack-merge');
 const baseConfig = require('./webpack.config.base');
 
@@ -34,10 +35,11 @@ module.exports = merge(baseConfig, {
             },
 
             {
-                test: /^((?!\.global).)*\.css$/,
+                test: /^((?!(\.global|(node_modules.*))).)*\.css$/,
                 loaders: [
                     'style-loader',
-                    'css-loader?modules&sourceMap&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]'
+                    'css-loader'
+                    // 'css-loader?modules&sourceMap&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]'
                 ]
             },
 
@@ -151,7 +153,9 @@ module.exports = merge(baseConfig, {
 
         new webpack.LoaderOptionsPlugin({
             debug: true
-        })
+        }),
+
+        // new MonacoWebpackPlugin()
     ],
 
     // https://github.com/chentsulin/webpack-target-electron-renderer#how-this-module-works

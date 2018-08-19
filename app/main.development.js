@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu, shell } = require('electron');
+const { app, BrowserWindow, Menu, shell, globalShortcut } = require('electron');
 require('./electron/handlers');
 
 let menu;
@@ -45,7 +45,8 @@ app.on('ready', () =>
     width: 1024,
     height: 728
   });
-      mainWindow.setMenu(null);
+
+    mainWindow.setMenu(null);
 
   mainWindow.loadURL(`file://${__dirname}/app.html`);
 
@@ -68,6 +69,11 @@ app.on('ready', () =>
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
+
+      // mainWindow.openDevTools();
+    globalShortcut.register('CommandOrControl+F12', () => {
+        mainWindow.openDevTools();
+    });
 
   if (process.env.NODE_ENV === 'development') {
     mainWindow.openDevTools();
