@@ -24,13 +24,6 @@ module.exports = merge(baseConfig, {
     },
 
     module: {
-        // preLoaders: [
-        //   {
-        //     test: /\.js$/,
-        //     loader: 'eslint-loader',
-        //     exclude: /node_modules/
-        //   }
-        // ],
         loaders: [
             {
                 test: /\.global\.css$/,
@@ -158,7 +151,7 @@ module.exports = merge(baseConfig, {
 
         new webpack.LoaderOptionsPlugin({
             debug: true
-        }),
+        })
     ],
 
     // https://github.com/chentsulin/webpack-target-electron-renderer#how-this-module-works

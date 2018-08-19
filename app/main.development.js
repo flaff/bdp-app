@@ -49,6 +49,17 @@ app.on('ready', () =>
 
   mainWindow.loadURL(`file://${__dirname}/app.html`);
 
+//   mainWindow.webContents.executeJavaScript(`
+//      var path = require('path');
+//     module.paths.push(path.resolve('node_modules'));
+//     module.paths.push(path.resolve('../node_modules'));
+//     module.paths.push(path.resolve(__dirname, '..', '..', 'electron', 'node_modules'));
+//     module.paths.push(path.resolve(__dirname, '..', '..', 'electron.asar', 'node_modules'));
+//     module.paths.push(path.resolve(__dirname, '..', '..', 'app', 'node_modules'));
+//     module.paths.push(path.resolve(__dirname, '..', '..', 'app.asar', 'node_modules'));
+//     path = undefined;
+// `);
+
   mainWindow.webContents.on('did-finish-load', () => {
     mainWindow.show();
     mainWindow.focus();

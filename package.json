@@ -1,6 +1,6 @@
 {
   "name": "electron-react-typescript-boilerplate",
-  "productName": "ElectronReactTypescript",
+  "productName": "DataExplorationTool",
   "version": "0.10.0",
   "description": "Electron application boilerplate based on TypeScript, React, React Router, Webpack, React Hot Loader for rapid application development",
   "main": "main.js",
@@ -15,7 +15,7 @@
     "build": "npm run build-main && npm run build-renderer",
     "start": "cross-env NODE_ENV=production electron ./app/",
     "start-hot": "cross-env HOT=1 NODE_ENV=development electron ./app/main.development",
-    "postinstall": "./node_modules/.bin/electron-rebuild && npm run build",
+    "postinstall": "./node_modules/.bin/electron-rebuild --target 1.8.4 && npm run build",
     "electron-rebuild": "./node_modules/.bin/electron-rebuild",
     "dev": "npm run hot-server -- --start-hot",
     "package": "npm run build && build --publish never",
@@ -46,8 +46,8 @@
     ]
   },
   "build": {
-    "productName": "ElectronReactTypescript",
-    "appId": "io.github.irath96.ElectronReactTypescript",
+    "productName": "DataExplorationTool",
+    "appId": "io.github.flaff.DataExplorationTool",
     "dmg": {
       "contents": [
         {
@@ -134,7 +134,7 @@
     "css-loader": "^0.28.4",
     "css-modules-require-hook": "^4.0.6",
     "devtron": "^1.4.0",
-    "electron": "1.8.4",
+    "electron": "^1.8.4",
     "electron-builder": "^19.8.0",
     "electron-builder-http": "^19.15.0",
     "electron-devtools-installer": "^2.0.1",
@@ -150,6 +150,7 @@
     "identity-obj-proxy": "^3.0.0",
     "jest": "^22.0.4",
     "json-loader": "^0.5.4",
+    "node-loader": "^0.6.0",
     "node-sass": "^4.9.0",
     "promisify-node": "^0.4.0",
     "react-hot-loader": "^3.0.0-beta.6",

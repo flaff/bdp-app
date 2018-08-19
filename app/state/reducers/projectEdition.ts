@@ -288,7 +288,7 @@ const
         };
     };
 
-    export default function projectEditionReducer(state: ProjectEditionState, action: IAction<any>) {
+export default function projectEditionReducer(state: ProjectEditionState, action: IAction<any>) {
     switch (action.type) {
         case MODIFY_VIEW_FILE.type:
             return modifyViewFileReducer(state, action);

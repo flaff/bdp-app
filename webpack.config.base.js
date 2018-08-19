@@ -18,7 +18,9 @@ module.exports = {
     }, {
       test: /\.json$/,
       loader: 'json-loader'
-    }]
+    },
+        // { test: /\.node$/, loader: 'node-loader' }
+    ]
   },
 
   output: {
@@ -52,5 +54,7 @@ module.exports = {
       ])
   ],
 
-  externals: Object.keys(externals || {})
+  externals: Object.keys(externals || {
+      nodegit: 'commonjs nodegit'
+  })
 };

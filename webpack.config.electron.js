@@ -5,6 +5,7 @@
 const webpack = require('webpack');
 const merge = require('webpack-merge');
 const baseConfig = require('./webpack.config.base');
+const fs = require('fs');
 
 module.exports = merge(baseConfig, {
   devtool: 'source-map',
@@ -14,8 +15,10 @@ module.exports = merge(baseConfig, {
   // 'main.js' in root
   output: {
     path: __dirname,
-    filename: './app/main.js'
+    filename: './app/main.js',
+      // libraryTarget: "commonjs2"
   },
+    // externals: fs.readdirSync('node_modules').filter(function(x) { return x !== '.bin' }),
 
   plugins: [
     // Add source map support for stack traces in node
